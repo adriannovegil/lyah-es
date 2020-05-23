@@ -4,7 +4,6 @@ Tipos y clases de tipos
 Cree en el tipo
 ---------------
 
-
 .. image:: /images/cow.png
    :align: left
    :alt: ¡Vaca!
@@ -33,7 +32,7 @@ Ahora vamos a usar GHCi para examinar los tipos de algunas expresiones. Lo
 haremos gracias al comando ``:t``, el cual, seguido de una expresión válida
 nos dice su tipo. Vamos a dar un vistazo:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :t 'a'
     'a' :: Char
@@ -112,7 +111,7 @@ Aquí tienes una descripción de los tipos más comunes:
        factorial :: Integer -> Integer
        factorial n = product [1..n]
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> factorial 50
        30414093201713378043612608166064768844377641568960512000000000000
@@ -123,7 +122,7 @@ Aquí tienes una descripción de los tipos más comunes:
        circumference :: Float -> Float
        circumference r = 2 * pi * r
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> circumference 4.0
        25.132742
@@ -134,7 +133,7 @@ Aquí tienes una descripción de los tipos más comunes:
        circumference' :: Double -> Double
        circumference' r = 2 * pi * r
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> circumference' 4.0
        25.132741228718345
@@ -151,7 +150,6 @@ eso son demasiados tipos como para cubrirlos en esta guía. La tupla vacía
 es también un tipo :cpp:type:`()` el cual solo puede contener un valor:
 ``()``.
 
-
 Variables de tipo
 -----------------
 
@@ -159,7 +157,7 @@ Variables de tipo
 lista de cualquier tipo y devuelve su primer elemento... ¿Cual podrá ser?
 Vamos a verlo:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :t head
     head :: [a] -> a
@@ -185,7 +183,7 @@ carácter, normalmente les damos nombres como a, b, c, d, etc.
 ¿Recuerdas ``fst``? Devuelve el primer componente de una dupla. Vamos a
 examinar su tipo.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :t fst
     fst :: (a, b) -> a
@@ -197,12 +195,10 @@ tipos. Ten en cuenta que solo porque ``a`` y ``b`` son diferentes variables de
 tipo no tienen porque ser diferentes tipos. Simplemente representa que el
 primer componente y el valor que devuelve la función son del mismo tipo.
 
-
 .. _clases-de-tipo-1:
 
 Clases de tipos paso a paso (1ª parte)
 --------------------------------------
-
 
 .. image:: /images/classes.png
    :align: right
@@ -219,7 +215,7 @@ Objective-C, pero mejor.
 
 ¿Cuál es la declaración de tipo de la función ``==``?
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :t (==)
     (==) :: (Eq a) => a -> a -> Bool
@@ -257,7 +253,7 @@ Algunas clases de tipos básicas son:
    anteriormente forman parte de la clase ``Eq`` exceptuando las funciones,
    así que podemos realizar comparaciones de igualdad sobre ellos.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> 5 == 5
        True
@@ -272,7 +268,7 @@ Algunas clases de tipos básicas son:
 
  * :cpp:class:`Ord` es para tipos que poseen algún orden.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> :t (>)
        (>) :: (Ord a) => a -> a -> Bool
@@ -288,7 +284,7 @@ Algunas clases de tipos básicas son:
    Para ser miembro de ``Ord``, primero un tipo debe ser socio del prestigioso
    y exclusivo club ``Eq``.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> "Abrakadabra" < "Zebra"
        True
@@ -305,7 +301,7 @@ Algunas clases de tipos básicas son:
    la función :cpp:member:`show`. Toma un valor de un tipo que pertenezca a
    la clase ``Show`` y lo representa como una cadena de texto.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> show 3
        "3"
@@ -318,7 +314,7 @@ Algunas clases de tipos básicas son:
    :cpp:member:`read` toma una cadena y devuelve un valor del tipo que es
    miembro de ``Read``.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> read "True" || False
        True
@@ -333,7 +329,7 @@ Algunas clases de tipos básicas son:
    las funciones forman parte de esta clase de tipos. Pero, ¿Qué pasa si
    simplemente usamos ``read "4"``?
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> read "4"
        <interactive>:1:0:
@@ -350,7 +346,7 @@ Algunas clases de tipos básicas son:
    ``Read``, pero no cual. Vamos a echar un vistazo a la declaración de tipo
    de la función ``read``.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> :t read
        read :: (Read a) => String -> a
@@ -362,7 +358,7 @@ Algunas clases de tipos básicas son:
    tener una expresión. Lo hacemos añadiendo ``::`` al final de la expresión y
    luego especificando el tipo. Observa:
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> read "5" :: Int
        5
@@ -392,7 +388,7 @@ Algunas clases de tipos básicas son:
    son: ``()``, ``Bool``, ``Char``, ``Ordering``, ``Int``, ``Integer``,
    ``Float`` y ``Double``.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> ['a'..'e']
        "abcde"
@@ -406,7 +402,7 @@ Algunas clases de tipos básicas son:
  * Los miembros de :cpp:class:`Bounded` poseen límites inferiores y
    superiores, es decir están acotados.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> minBound :: Int
        -2147483648
@@ -423,7 +419,7 @@ Algunas clases de tipos básicas son:
    Todas las tuplas son también ``Bounded`` si sus componentes los son
    también.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> maxBound :: (Bool, Int, Char)
        (True,2147483647,'\1114111')
@@ -432,7 +428,7 @@ Algunas clases de tipos básicas son:
    propiedad de poder comportarse como números. Vamos a examinar el tipo de
    un número.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> :t 20
        20 :: (Num t) => t
@@ -440,7 +436,7 @@ Algunas clases de tipos básicas son:
    Parece que todos los números son también constantes polimórficas. Pueden
    actuar como si fueran cualquier tipo de la clase ``Num``.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> 20 :: Int
        20
@@ -454,7 +450,7 @@ Algunas clases de tipos básicas son:
    Estos son los tipo estándar de la clase ``Num``. Si examinamos el tipo de
    ``*`` veremos que puede aceptar cualquier tipo de número.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> :t (*)
        (*) :: (Num a) => a -> a -> a

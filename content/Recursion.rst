@@ -1,16 +1,12 @@
-
 Recursión
 =========
-
 
 ¡Hola recursión!
 ----------------
 
-
 .. image:: /images/recursion.png
    :align: left
    :alt: Rusia sovietica
-
 
 En el capítulo anterior ya mencionamos la recursión. En este capítulo veremos
 más detenidamente este tema, el porqué es importante en Haskell y como podemos
@@ -43,10 +39,8 @@ lugar de declarar **como** obtener algo. Por este motivo no hay bucles
 ``while`` o bucles ``for`` en Haskell y en su lugar tenemos que usar la
 recursión para declarar como es algo.
 
-
 El impresionante maximum
 ------------------------
-
 
 La función ``maximum`` toma una lista de cosas que pueden ser ordenadas (es
 decir instancias de la clase de tipos ``Ord``) y devuelve la más grande.
@@ -117,10 +111,8 @@ primer elemento y el máximo del resto de sus elementos.
    :align: center
    :alt: Máximo
 
-
 Unas cuantas funciones recursivas más
 -------------------------------------
-
 
 Ahora que sabemos cómo pensar de forma recursiva en general, vamos a
 implementar unas cuantas funciones de forma recursiva. En primer lugar, vamos
@@ -246,7 +238,6 @@ falso.
 ¡Quicksort!
 -----------
 
-
 .. image:: /images/quickman.png
    :align: left
    :alt: Quickman
@@ -285,7 +276,7 @@ función: ::
 
 Vamos a ejecutar una pequeña prueba para ver si se comporta correctamente.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> quicksort [10,2,5,3,1,6,7,4,2,3,4,8,9]
     [1,2,2,3,3,4,4,5,6,7,8,9,10]
@@ -317,10 +308,8 @@ cabeza porque es muy fácil aplicarle un patrón. Los elementos que son más
 pequeños que el pivote son de color verde claro y los elementos que son
 mayores en negro. El gradiente amarillo representa la aplicación de Quicksort.
 
-
 Pensando de forma recursiva
 ---------------------------
-
 
 Hemos usado un poco la recursión y como te habrás dado cuenta existen unos
 pasos comunes. Normalmente primero definimos los casos base y luego definimos

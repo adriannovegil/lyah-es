@@ -1,7 +1,6 @@
 Introducción
 ============
 
-
 Sobre esta guía
 ---------------
 
@@ -40,7 +39,6 @@ decir es que Haskell es genial y si estás interesado en la programación
 deberías aprenderlo incluso aunque te sea totalmente extraño. Aprender Haskell
 es como aprender a programar por primera vez ¡Es divertido! Te fuerza a que
 pienses diferente, lo cual nos lleva a la siguiente sección...
-
 
 Entonces, ¿qué es Haskell?
 --------------------------
@@ -127,7 +125,6 @@ respectivos doctorados). El proyecto de crear Haskell comenzó en 1987 cuando
 un comité de investigadores se pusieron de acuerdo para diseñar un lenguaje
 revolucionario. En el 2003 el informe Haskell fue publicado, definiendo así
 una versión estable del lenguaje.
-
 
 Qué necesitas para comenzar
 ---------------------------

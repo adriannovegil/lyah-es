@@ -1,5 +1,3 @@
-
-
 La sintaxis de las funciones
 ============================
 
@@ -85,7 +83,7 @@ Los patrones también pueden fallar. Si definimos una función como esta: ::
 
 E intentamos ejecutarla con un valor no esperado, esto es lo que pasa:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> charName 'a'
     "Albert"
@@ -137,7 +135,7 @@ en realidad no nos importa ese valor, ya que no lo vamos a utilizar.
 También podemos utilizar ajuste de patrones con las listas intensionales.
 Fíjate:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let xs = [(1,3), (4,3), (2,4), (5,3), (5,6), (3,1)]
     ghci> [a+b | (a,b) <- xs]
@@ -172,7 +170,7 @@ propia función ``head``. ::
 
 Comprobamos que funciona:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> head' [4,5,6]
     4
@@ -251,7 +249,7 @@ Un ejemplo rápido: ::
     capital "" = "¡Una cadena vacía!"
     capital all@(x:_) = "La primera letra de " ++ all ++ " es " ++ [x]
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> capital "Dracula"
     "La primera letra de Dracula es D"
@@ -265,7 +263,6 @@ usar un patrón ``(xs ++ ys)``, ¿qué habría en la primera lista y qué en la
 segunda? No tiene mucho sentido. Tendría más sentido ajustar patrones como
 ``(xs ++ [x,y,z])`` o simplemente ``(xs ++ [x])`` pero dada la naturaleza de
 las listas no podemos hacer esto.
-
 
 .. _guardas:
 
@@ -339,7 +336,7 @@ nosotros. ::
 
 Vamos a ver si estoy gordo...
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> bmiTell 85 1.90
     "Supuestamente eres normal... Espero que seas feo."
@@ -375,7 +372,7 @@ propio ``compare`` usando guardas. ::
         | a == b    = EQ
         | otherwise = LT
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> 3 `myCompare` 2
     GT
@@ -384,7 +381,6 @@ propio ``compare`` usando guardas. ::
     No solo podemos llamar a funciones de forma infija usando las comillas,
     sino que también podemos definirlas de esta forma. A veces es más fácil
     leerlo así.
-
 
 ¿Dónde?
 -------
@@ -480,12 +476,10 @@ Las secciones ``where`` también pueden estar anidadas. Es muy común crear una
 función y definir algunas funciones auxiliares en la sección ``where`` y luego
 definir otras funciones auxiliares dentro de cada uno de ellas.
 
-
 .. _leitbe:
 
 Let it be
 ---------
-
 
 Muy similar a las secciones ``where`` son las expresiones ``let``. Las
 secciones ``where`` son una construcción sintáctica que te dejan ligar
@@ -521,7 +515,7 @@ Las secciones ``where`` son simplemente construcciones sintácticas. ¿Recuerdas
 cuando explicamos las sentencias ``if`` y se explicó que como son una
 expresión pueden ser usadas en casi cualquier lugar?
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [if 5 > 3 then "Woo" else "Boo", if 'a' > 'b' then "Foo" else "Bar"]
     ["Woo", "Bar"]
@@ -530,14 +524,14 @@ expresión pueden ser usadas en casi cualquier lugar?
 
 También puedes hacer lo mismo con las expresiones ``let``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> 4 * (let a = 9 in a + 1) + 2
     42
 
 También pueden ser utilizadas para definir funciones en un ámbito local:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [let square x = x * x in (square 5, square 3, square 2)]
     [(25,9,4)]
@@ -546,7 +540,7 @@ Si queremos ligar varias variables en una solo línea, obviamente no podemos
 alinear las definiciones en la misma columna. Por este motivo podemos
 separarlas con puntos y comas.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> (let a = 100; b = 200; c = 300 in a*b*c, let foo="Hey "; bar = "there!" in foo ++ bar)
     (6000000,"Hey there!")
@@ -556,7 +550,7 @@ queremos. Como ya hemos dicho, podemos utilizar ajustes de patrones con las
 expresiones ``let``. Son muy útiles para desmantelar tuplas en sus componentes
 y ligarlos a varias variables.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> (let (a,b,c) = (1,2,3) in a+b+c) * 100
     600
@@ -590,7 +584,7 @@ también puede ser omitida cuando definimos funciones y constantes dentro del
 intérprete ``GHCi``. Si lo hacemos, las variables serán visibles durante toda
 la sesión.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let zoot x y z = x * y + z
     ghci> zoot 3 9 2
@@ -607,7 +601,6 @@ guardas. Hay gente que prefiere las secciones ``where`` porque las variables
 vienen después de la función que los utiliza. De esta forma, el cuerpo de la
 función esta más cerca de su nombre y declaración de tipo y algunos piensan
 que es más legible.
-
 
 Expresiones case
 ----------------

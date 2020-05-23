@@ -1,11 +1,7 @@
-
-
 .. _cfuntores:
-
 
 Funtores, funtores aplicativos y monoides
 =========================================
-
 
 La combinación de Haskell de la pureza, las funciones de orden superior,
 tipos de datos algebraicos con parámetros, y clases de tipos nos permite
@@ -31,7 +27,6 @@ a la vez bastante abstracto de lo que pueden describir las clases de tipos. En
 este capítulo veremos más de cerca los funtores, junto a una versión más
 fuerte y útil de los funtores llamados funtores aplicativos. También daremos
 un vistazo a los monoides.
-
 
 De vuelta con los funtores
 --------------------------
@@ -170,7 +165,7 @@ funciones: ::
     main = do line <- fmap (intersperse '-' . reverse . map toUpper) getLine
               putStrLn line
 
-.. code-block:: console
+.. code-block:: none
 
     $ runhaskell fmapping_io.hs
     hello there
@@ -245,7 +240,7 @@ De esta forma vemos de forma clara que ``fmap`` es simplemente una composición
 de funciones. Ejecuta ``:m + Control.Monad.Instances``, ya que ahí está
 definida esta instancia e intenta mapear algunas funciones.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :t fmap (*3) (+100)
     fmap (*3) (+100) :: (Num a) => a -> a
@@ -309,7 +304,7 @@ devuelve otro funtor como resultado. Toma una función ``a -> b`` y devuelve
 una función ``f a -> f b``. A esto se llama *mover una función*. Vamos a
 trastear un poco con esa idea utilizando el comando ``:t`` de GHCi:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :t fmap (*2)
     fmap (*2) :: (Num a, Functor f) => f a -> f a
@@ -338,7 +333,7 @@ con una lista, la implementación de ``fmap`` para listas será utilizada, que
 es ``map``. Si la usamos con un``Maybe``, aplicará ``replicate 3`` al valor
 contenido en ``Just``, o si es ``Nothing``, devolverá ``Nothing``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> fmap (replicate 3) [1,2,3,4]
     [[1,1,1],[2,2,2],[3,3,3],[4,4,4]]
@@ -371,7 +366,7 @@ como ``\x -> x``. Si vemos el funtor como algo que puede ser mapeado, la ley
 
 Vamos a ver si esta ley se cumple para algunos funtores:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> fmap id (Just 3)
     Just 3
@@ -461,7 +456,7 @@ el tipo ``a``, que procede del parámetro de tipo y su tipo será el tipo
 concreto que elijamos para ``CMaybe a``. Vamos a jugar un poco con este nuevo
 tipo para ver como funciona.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> CNothing
     CNothing
@@ -491,7 +486,7 @@ no solo aplicamos la función al contenido de la caja, sino que además
 incrementamos el contador en uno. Parece que todo está bien hasta ahora,
 incluso podemos probarlo un poco:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> fmap (++"ha") (CJust 0 "ho")
     CJust 1 "hoha"
@@ -503,7 +498,7 @@ incluso podemos probarlo un poco:
 ¿Cumple con las leyes de los funtores? Para demostrar que no cumple las leyes,
 basta con encontrar un contraejemplo.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> fmap id (CJust 0 "haha")
     CJust 1 "haha"
@@ -568,12 +563,10 @@ función, solo que cuando le demos un número, primero se multiplicará por tres
 y luego se le sumará tres, que es exactamente lo mismo que sucede con la
 composición de funciones.
 
-
 .. _aplicativos:
 
 Funtores aplicativos
 --------------------
-
 
 .. image:: /images/present.png
    :align: right
@@ -605,7 +598,7 @@ aplicará la función ``*`` dentro de ``Just``. Así pues, al hacer
 usando secciones como ``Just (* 3)`` ¡Interesante! ¡Ahora tenemos una función
 dentro de un ``Just``!
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :t fmap (++) (Just "hey")
     fmap (++) (Just "hey") :: Maybe ([Char] -> [Char])
@@ -629,7 +622,7 @@ con ellos? Bien, podemos mapear funciones que toman estas funciones como
 parámetros sobre ellos, ya que cualquier cosa que este dentro de un funtor
 será pasado a la función que mapeamos.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let a = fmap (*) [1,2,3,4]
     ghci> :t a
@@ -726,7 +719,7 @@ parámetros es ``Nothing``, ``Nothing`` será el resultado.
 
 Vale, genial. Vamos a probarlo.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> Just (+3) <*> Just 9
     Just 12
@@ -754,7 +747,7 @@ el resultado sea una función parcialmente aplicada. Los funtores aplicativos,
 por otra parte, te permiten operar con varios funtores con una única función.
 Mira esto:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> pure (+) <*> Just 3 <*> Just 5
     Just 8
@@ -820,14 +813,14 @@ Vamos a ver más de cerca como funciona. Tenemos un valor ``Just "johntra"`` y
 un valor ``Just "volta"`` y queremos unirlos en una sola ``String`` dentro
 de un funtor ``Maybe``. Hacemos esto:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> (++) <$> Just "johntra" <*> Just "volta"
     Just "johntravolta"
 
 Antes de que veamos qué sucede aquí, compara lo anterior con esto:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> (++) "johntra" "volta"
     "johntravolta"
@@ -868,7 +861,7 @@ una lista unitaria. De forma similar, el contexto mínimo para el funtor
 aplicativo de ``Maybe`` sería ``Nothing``, pero este representa el hecho de
 no tener un valor, así que ``pure`` está implementado usando ``Just``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> pure "Hey" :: [String]
     ["Hey"]
@@ -887,7 +880,7 @@ lista de la izquierda en cada posible valor de la lista de la derecha. El
 resultado será una lista con cada posible combinación de aplicar una función
 de la primera lista sobre un valor de la segunda lista.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [(*0),(+100),(^2)] <*> [1,2,3]
     [0,0,0,101,102,103,1,4,9]
@@ -898,7 +891,7 @@ lista de la izquierda se aplica a cada valor de la lista de la derecha. Si
 tuviéramos funciones que tomen dos parámetros, podemos aplicar estas funciones
 entre dos listas.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [(+),(*)] <*> [1,2] <*> [3,4]
     [4,5,5,6,3,4,6,8]
@@ -911,7 +904,7 @@ aplica a cada valor de la lista de la derecha. Luego, se calcula
 
 Usar el estilo aplicativo con listas es divertido. Mira:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> (++) <$> ["ha","heh","hmm"] <*> ["?","!","."]
     ["ha?","ha!","ha.","heh?","heh!","heh.","hmm?","hmm!","hmm."]
@@ -934,7 +927,7 @@ El estilo aplicativo con listas suele ser un buen remplazo par la listas por
 comprensión. En el segundo capítulo, queríamos saber todos los posibles
 productos entre ``[2,5,10]`` y ``[8,10,11]``, así que hicimos esto:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [ x*y | x <- [2,5,10], y <- [8,10,11]]
     [16,20,22,40,50,55,80,100,110]
@@ -943,7 +936,7 @@ Simplemente extraemos valores de las dos listas y aplicamos una función para
 combinar los elementos. Esto también se puede hacer usando el estilo
 aplicativo:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> (*) <$> [2,5,10] <*> [8,10,11]
     [16,20,22,40,50,55,80,100,110]
@@ -953,7 +946,7 @@ simplemente estamos aplicando ``*`` entre dos computaciones no deterministas.
 Si quisiéramos todos los posibles productos entre ambas listas que fueran
 mayores que 50, podríamos hacer algo como:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> filter (>50) $ (*) <$> [2,5,10] <*> [8,10,11]
     [55,80,100,110]
@@ -1067,7 +1060,7 @@ y crea una función que ignora su parámetro y devuelve siempre ese mismo valor.
 Si vemos el tipo de ``pure``, pero restringido al tipo de la instancia
 ``(-> r)``, sería ``pure :: a -> (r -> a)``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> (pure 3) "blah"
     3
@@ -1075,7 +1068,7 @@ Si vemos el tipo de ``pure``, pero restringido al tipo de la instancia
 Gracias a la currificación, la aplicación de funciones es asociativa por la
 izquierda, así que podemos omitir los paréntesis.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> pure 3 "blah"
     3
@@ -1084,7 +1077,7 @@ La implementación de la instancia para ``<*>`` es un poco críptica, así que
 será mejor si simplemente vemos un ejemplo de como utilizar las funciones como
 funtores aplicativos en estilo aplicativo:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :t (+) <$> (+3) <*> (*100)
     (+) <$> (+3) <*> (*100) :: (Num a) => a -> a
@@ -1100,7 +1093,7 @@ este ejemplo real, hemos hecho ``(+) <$> (+3) <*> (*100) $ 5``, el primer
 ``5`` se aplica a ``(+3)`` y ``(*100)``, obteniendo ``8`` y ``500``. Luego, se
 llama a ``+`` con ``8`` y ``500``, obteniendo ``508``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> (\x y z -> [x,y,z]) <$> (+3) <*> (*2) <*> (/2) $ 5
     [8.0,10.0,2.5]
@@ -1180,7 +1173,7 @@ otra finita, la lista resultante siempre tendrá el tamaño de la lista finita.
 ``ZipList a`` no tiene una instancia para ``Show``, así que tenemos que
 utilizar la función :cpp:member:`getZipList` para extraer una lista primitiva.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> getZipList $ (+) <$> ZipList [1,2,3] <*> ZipList [100,100,100]
     [101,102,103]
@@ -1227,7 +1220,7 @@ en forma de lista. Por ejemplo, tenemos ``Just 3`` y ``Just 4``. Vamos a
 asumir que el segundo está dentro de una lista unitaria, lo cual es realmente
 fácil de conseguir:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> fmap (\x -> [x]) (Just 4)
     Just [4]
@@ -1235,7 +1228,7 @@ fácil de conseguir:
 Vale, ahora tenemos ``Just 3`` y ``Just [4]`` ¿Cómo obtendríamos
 ``Just [3,4]``? Fácil.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> liftA2 (:) (Just 3) (Just [4])
     Just [3,4]
@@ -1290,7 +1283,7 @@ resultados de los funtores aplicativos.
 
 Vamos a probar nuestra función.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> sequenceA [Just 3, Just 2, Just 1]
     Just [3,2,1]
@@ -1330,7 +1323,7 @@ aplicarlas todas al mismo parámetro y luego tener los resultados en una lista.
 Por ejemplo, si tenemos un número y queremos saber si satisface todos los
 predicados que contiene una lista. Una forma de hacerlo sería así:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> map (\f -> f 7) [(>4),(<10),odd]
     [True,True,True]
@@ -1340,7 +1333,7 @@ predicados que contiene una lista. Una forma de hacerlo sería así:
 Recuerda que ``and`` toma una lista de booleanos y devuelve ``True`` si son
 todos ``True``. Otra forma de hacer lo mismo sería con ``sequenceA``:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> sequenceA [(>4),(<10),odd] 7
     [True,True,True]
@@ -1364,7 +1357,7 @@ todas las combinaciones posibles de sus elementos. A título de ejemplo aquí
 tienes unos cuantos usos de ``sequenceA`` con sus equivalentes usando listas
 por comprensión:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> sequenceA [[1,2,3],[4,5,6]]
     [[1,4],[1,5],[1,6],[2,4],[2,5],[2,6],[3,4],[3,5],[3,6]]
@@ -1424,7 +1417,7 @@ tienen que ser secuenciadas de forma que sean ejecutadas unas detrás de otra
 cuando se fuerce la evaluación. No puede obtener el resultado de una acción de
 E/S si no la ejecutas primero.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> sequenceA [getLine, getLine, getLine]
     heyh
@@ -1456,10 +1449,8 @@ puede fallar, etc. utilizando el estilo aplicativo. Simplemente utilizando
 uniforme con cualquier número de funtores aplicativos y tomar ventaja de la
 semántica de cada uno.
 
-
 La palabra clave newtype
 ------------------------
-
 
 .. image:: /images/maoi.png
    :align: left
@@ -1478,7 +1469,7 @@ contenga la lista de la derecha, de forma que devuelva todas las posibles
 combinaciones de aplicar una función de la izquierda con un valor de la
 derecha.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [(+1),(*100),(*5)] <*> [1,2,3]
     [2,3,4,100,200,300,5,10,15]
@@ -1497,7 +1488,7 @@ como funtores aplicativos era diferente. Solo teníamos que utilizar el
 constructor ``ZipList`` con la lista y cuando termináramos debíamos usar
 ``getZipList`` para recuperarla.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> getZipList $ ZipList [(+1),(*100),(*5)] <*> ZipList [1,2,3]
     [2,200,15]
@@ -1562,7 +1553,7 @@ y equiparar valores del nuevo tipo: ::
 
 Vamos a probarlo:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> CharList "this will be shown!"
     CharList {getCharList = "this will be shown!"}
@@ -1589,7 +1580,6 @@ son las operaciones de inserción y extracción de las que antes hablábamos,
 aunque también puedes verlo como una transformación de un tipo a otro. Gracias
 a las propiedades de ``newtype``, estas operaciones no tendrán ningún coste
 en tiempo de ejecución.
-
 
 Utilizando newtype para crear instancias de clase
 '''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1683,7 +1673,7 @@ Haskell representa un cómputo erróneo. Si intentamos evaluarlo (es decir,
 forzamos a Haskell a que lo calcule) mostrándolo por la terminal, Haskell se
 lanzará un berrinche (técnicamente conocido como excepción):
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> undefined
     *** Exception: Prelude.undefined
@@ -1693,7 +1683,7 @@ solo necesitamos la cabeza de la lista, la cual no es ``undefined``, todo
 funcionará bien ya que Haskell no necesita evaluar ningún otro elemento de la
 lista si solo estamos interesados en el primer elemento:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> head [3,4,5,undefined,2,undefined]
     3
@@ -1715,7 +1705,7 @@ función que use un ajuste de patrones en un ``CoolBool`` y devuelva el valor
 En lugar de aplicar esta función a un valor normal de ``CoolBool``, vamos a
 complicarnos la vida y aplicar el valor ``undefined``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> helloMe undefined
     "*** Exception: Prelude.undefined
@@ -1738,7 +1728,7 @@ se utiliza en el ajuste de patrones es igual para ``data`` que para
 ``newtype``. Vamos a hacer lo mismo y aplicar ``helloMe`` a un valor
 ``undefined``:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> helloMe undefined
     "hola"
@@ -1766,7 +1756,6 @@ cero, ``newtype`` sirve para crear un tipo completamente nuevo a partir de uno
 ya existente. Cuando utilizamos un ajuste de patrones con un tipo ``newtype``
 no estamos extrayendo ningún dato de él (como ocurriría con ``data``), sería
 más bien como una conversión directa entre un dato y otro.
-
 
 type vs. newtpe vs. data
 ''''''''''''''''''''''''
@@ -1835,13 +1824,10 @@ instancia de una clase de tipos, seguramente quieras utilizar ``newtype``. Y
 si lo que quieres es crear algo completamente nuevo, apostaría a que debes
 utilizar ``data``.
 
-
 .. _monoides:
-
 
 Monoides
 --------
-
 
 .. image:: /images/pirateship.png
    :align: right
@@ -1870,7 +1856,7 @@ toma dos listas y las concatena. Al igual que pasaba con ``*``, ``++`` también
 posee un valor que hará que el resultado final solo dependa del otro valor. En
 este caso el valor es la lista vacía, ``[]``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> 4 * 1
     4
@@ -1896,7 +1882,7 @@ función binaria no importa. No importa si hacemos ``(3 * 4) * 5`` o
 ``3 * (4 * 5)``, al final el resultado será ``60``. Lo mismo ocurre para
 ``++``:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> (3 * 2) * (8 * 5)
     240
@@ -1987,7 +1973,6 @@ valores de un monoide en uno no debe importar. Haskell no comprueba estas
 leyes, así que nosotros como programadores debemos ser cautelosos y
 asegurarnos de obedecer estas leyes.
 
-
 Las listas son monoides
 '''''''''''''''''''''''
 
@@ -2005,7 +1990,7 @@ requiere un tipo concreto para formar la instancia.
 
 Si realizamos algunas pruebas no nos encontraremos ninguna sorpresa:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [1,2,3] `mappend` [4,5,6]
     [1,2,3,4,5,6]
@@ -2057,7 +2042,6 @@ No pasa nada. El hecho de que la multiplicación ``3 * 5`` y ``5 * 3`` tengan
 el mismo resultado es solo una propiedad de la multiplicación, pero no tiene
 porque cumplirse para los monoides.
 
-
 ``Product`` y ``Sum``
 '''''''''''''''''''''
 
@@ -2066,7 +2050,7 @@ función ``*`` y la identidad ``1``. Resulta que no es la única forma de que
 los números formen un monoide. Otra forma sería utilizando la función binaria
 ``+`` y como identidad ``0``:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> 0 + 4
     4
@@ -2106,7 +2090,7 @@ instancia para ``Monoid`` siempre que ``a`` sea miembro de la clase ``Num``.
 Para utilizar ``Product a`` como monoide, tenemos que introducir y extraer los
 valores:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> getProduct $ Product 3 `mappend` Product 9
     27
@@ -2125,7 +2109,7 @@ de ``Monoid`` que parece triviales ahora pueden ser muy útiles.
 ``Sum`` se define como ``Product`` y su instancia es similar. Lo utilizamos
 del mismo modo:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> getSum $ Sum 2 `mappend` Sum 9
     11
@@ -2133,7 +2117,6 @@ del mismo modo:
     3
     ghci> getSum . mconcat . map Sum $ [1,2,3]
     6
-
 
 ``Any`` y ``All``
 '''''''''''''''''
@@ -2161,7 +2144,7 @@ La razón por la que se llama ``Any`` (*Algún*) es porque devuelve ``True`` si
 envueltos en ``Any`` sean reducidos con ``mappend``, el resultado se
 mantendrá a ``True`` si alguno de ellos es ``True``:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> getAny $ Any True `mappend` Any False
     True
@@ -2189,7 +2172,7 @@ Y la instancia es: ::
 Cuando utilizamos ``mappend`` con tipos ``All``, el resultado será ``True``
 solo si todos los valores son ``True``:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> getAll $ mempty `mappend` All True
     True
@@ -2207,7 +2190,6 @@ explícitamente la función binaria en lugar de introducir los datos en un tipo
 ``and``, las cuales toman una lista de ``Bool`` y devuelven ``True`` si hay
 algún ``True`` o ``True`` si todos los son, respectivamente.
 
-
 El monoide ``Ordering``
 '''''''''''''''''''''''
 
@@ -2215,7 +2197,7 @@ El monoide ``Ordering``
 tiene tres posibles valores: ``LT``, ``EQ`` y ``GT``, cuyo significado es
 *menor que*, *igual que* y *mayor que* respectivamente:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> 1 `compare` 2
     LT
@@ -2264,7 +2246,7 @@ Es importante tener en cuenta que la instancia de ``Monoid`` para
 parámetro se mantiene como resultado a no ser que sea ``Eq``,  ``LT `mappend`
 GT`` devuelve ``LT``, mientras que ``GT `mappend` LT`` devuelve ``GT``:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> LT `mappend` GT
     LT
@@ -2301,7 +2283,7 @@ función de una forma mucho más simple: ::
 
 Vamos a probarla:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> lengthCompare "zen" "peces"
     LT
@@ -2327,7 +2309,7 @@ Hemos creado una función auxiliar que toma una cadena y nos dice cuantas
 vocales tiene. Para ello filtra las letras que estén contenidas en la cadena
 ``"aeiou"`` y luego aplica ``length``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> lengthCompare "zen" "anna"
     LT
@@ -2345,7 +2327,6 @@ así que se comparan alfabéticamente y ``"zen"`` gana.
 
 El monoide ``Ordering`` es muy útil ya que nos facilita comparar cosas por
 varios criterios en un cierto orden, del más importante al menos importante.
-
 
 El monoide ``Maybe``
 ''''''''''''''''''''
@@ -2375,7 +2356,7 @@ ambos valores y el resultado de dicha operación se introducirá en un valor
 clase nos asegura que el tipo que contiene los valores ``Just`` posee una
 instancia de ``Monoid``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> Nothing `mappend` Just "andy"
     Just "andy"
@@ -2415,7 +2396,7 @@ valor ``Just`` ignoramos el segundo parámetro. Si el primer parámetro es
 ``Nothing``, entonces damos el segundo parámetro como resultado,
 independientemente de que sea ``Nothing`` o ``Just``:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> getFirst $ First (Just 'a') `mappend` First (Just 'b')
     Just 'a'
@@ -2428,7 +2409,7 @@ independientemente de que sea ``Nothing`` o ``Just``:
 queremos saber si alguno de ellos es ``Just``. La función ``mconcat`` será
 útil en esos momentos:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> getFirst . mconcat . map First $ [Nothing, Just 9, Just 10]
     Just 9
@@ -2439,13 +2420,12 @@ se aplica ``mappend`` sobre dos valores ``Just`` en lugar del primero,
 ``First a``, solo que el último valor no ``Nothing`` se mantiene como
 resultado cuando se utiliza ``mappend`` o ``mconcat``:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> getLast . mconcat . map Last $ [Nothing, Just 9, Just 10]
     Just 10
     ghci> getLast $ Last (Just "one") `mappend` Last (Just "two")
     Just "two"
-
 
 Utilizando monoides para plegar estructuras de datos
 ''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -2473,7 +2453,7 @@ de tipos? Bueno, básicamente son ``foldr``, ``foldl``, ``foldr1`` y
 diferente? Vamos a comparar los tipos de ``foldr`` de ``Prelude`` y de
 ``foldr`` de ``Foldable`` para ver las diferencias:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :t foldr
     foldr :: (a -> b -> b) -> b -> [a] -> b
@@ -2484,7 +2464,7 @@ Mientras que ``foldr`` toma una lista y la pliega, el ``foldr`` de
 ``Data.Foldable`` toma cualquier tipo que pueda ser plegado , ¡no solo listas!
 Como era de esperar, ambas funciones se comportan igual con las listas.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> foldr (*) 1 [1,2,3]
     6
@@ -2494,7 +2474,7 @@ Como era de esperar, ambas funciones se comportan igual con las listas.
 Bien, ¿qué otras estructuras soportan pliegues? Pues nuestro querido ``Maybe``
 por ejemplo.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> F.foldl (+) 2 (Just 9)
     11
@@ -2596,7 +2576,7 @@ a su izquierda y un ``6`` a su derecha. El nodo raíz de la derecha contiene un
 la instancia de ``Foldable`` ahora podemos utilizar todos los pliegues que
 usábamos con las listas:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> F.foldl (+) 0 testTree
     42
@@ -2608,7 +2588,7 @@ También es útil para reducir una estructura a un único valor monoidal. Por
 ejemplo, si queremos saber si algún número de un árbol es igual a ``3``
 podemos hacer lo siguiente:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> getAny $ F.foldMap (\x -> Any $ x == 3) testTree
     True
@@ -2633,7 +2613,7 @@ sobre el árbol obtenemos un árbol que contendrá listas unitarias. Luego se
 aplicará ``mappend`` sobre todas esas listas de forma que obtendremos una
 única lista que contendrá todos los valores del árbol original.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> F.foldMap (\x -> [x]) testTree
     [1,3,6,5,8,9,10]

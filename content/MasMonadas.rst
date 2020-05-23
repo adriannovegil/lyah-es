@@ -1,8 +1,5 @@
-
-
 Unas cuantas mónadas más
 ========================
-
 
 .. image:: /images/clint.png
    :align: right
@@ -32,10 +29,8 @@ comprobarlo, ejecuta ``ghc-pkg list`` en la línea de comandos. Así podrás ver
 todos los paquetes que tienes instalados y uno de ellos debe ser ``mtl``,
 seguido de un número de versión.
 
-
 ¿Writer? No la conozco
 ----------------------
-
 
 Hemos cargado una pistola con la mónada ``Maybe``, la mónada lista y la mónada
 ``IO``. Ahora vamos a hacer sitio en la recámara para la mónada ``Writer`` y
@@ -69,7 +64,7 @@ primer es el resultado original y el segundo es la cadena que acompaña al
 resultado. Ahora este resultado tiene añadido un cierto contexto. Vamos a
 probarla:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> isBigGang 3
     (False,"Compared gang size to 9.")
@@ -127,7 +122,7 @@ ambos registros.
 
 Aquí tienes ``applyLog`` en acción:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> (3, "Smallish gang.") `applyLog` isBigGang
     (False,"Smallish gang.Compared gang size to 9")
@@ -137,7 +132,7 @@ Aquí tienes ``applyLog`` en acción:
 El resultado es similar al anterior, solo que el número de bandidos en la
 banda va acompañado de un registro. Unos cuantos ejemplos más:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> ("Tobin","Got outlaw name.") `applyLog` (\x -> (length x, "Applied length."))
     (5,"Got outlaw name.Applied length.")
@@ -146,7 +141,6 @@ banda va acompañado de un registro. Unos cuantos ejemplos más:
 
 Fíjate en el interior de la función lambda, ``x`` es un cadena normal y no una
 tupla. Además ``applyLog`` se encarga de concatenar los registros.
-
 
 Monoides al rescate
 '''''''''''''''''''
@@ -175,7 +169,7 @@ tal, ambas poseen instancias de la clase de tipos ``Monoid``, lo cual
 significa que ambas implementan la función ``mappend``. Y tanto par las listas
 como para las cadenas de bytes, ``mappend`` sirve para unir. Mira:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [1,2,3] `mappend` [4,5,6]
     [1,2,3,4,5,6]
@@ -211,7 +205,7 @@ Utilizamos cadenas para representar las comidas y un ``Int`` dentro de un
 ``newtype`` ``Sum`` para mantener el precio total. Recuerda, cuando utilizamos
 ``mappend`` con ``Sum`` el resultado será la suma de ambos parámetros:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> Sum 3 `mappend` Sum 9
     Sum {getSum = 12}
@@ -223,7 +217,7 @@ cualquier otra cosa bebemos cerveza. Aplicar esta función a una comida no
 sería muy interesante, pero si utilizamos ``applyLog`` para pasar una comida
 junto a un precio a esta función la cosa se vuelve más interesante:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> ("beans", Sum 10) `applyLog` addDrink
     ("milk",Sum {getSum = 35})
@@ -244,7 +238,7 @@ Como el valor que devuelve ``addDrink`` es una dupla del tipo
 que el resultado nos diga que vamos a beber y cuanto nos a costado en total.
 Aquí tienes una muestra:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> ("dogmeat", Sum 5) `applyLog` addDrink `applyLog` addDrink
     ("beer",Sum {getSum = 65})
@@ -254,10 +248,8 @@ y otros ``30`` centavos de más, ``("beer", Sum 35)``. Si utilizamos
 ``applyLog`` para pasar este último valor a ``addDrink``, obtenemos otra
 cerveza y el resultado final será ``("beer", Sum 35)``.
 
-
 El tipo ``Writer``
 ''''''''''''''''''
-
 
 Ahora que hemos visto que un valor junto a un monoide puede actuar como un
 valor monoidal, vamos a explorar la instancia de ``Monad`` para esos valores.
@@ -310,7 +302,7 @@ función, el valor monoidal resultante será igual al que devuelva la función.
 Vamos a utitlizar ``return`` con el número ``3`` unas cuantas veces, pero
 cada vez con un monoide distinto:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> runWriter (return 3 :: Writer String Int)
     (3,"")
@@ -328,7 +320,6 @@ Para ``Product`` la identidad es ``1``.
 La instancia de ``Writer`` no posee ninguna implementación de ``fail``, así
 que si un ajuste de patrones falla dentro de un bloque ``do`` se llamará a la
 función ``error``.
-
 
 Utilizando la notación ``do`` junto a ``Writer``
 ''''''''''''''''''''''''''''''''''''''''''''''''
@@ -361,7 +352,7 @@ los registros de ambos números aparezcan en el resultado final. Utilizamos
 valor y lo introduce en el contexto mínimo por defecto, podemos estar seguros
 de que no añadirá nada al registro. Esto es lo que vemos si lo ejecutamos:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> runWriter multWithLog
     (15,["Got number: 3","Got number: 5"])
@@ -390,7 +381,7 @@ la multiplicación, además que el tipo de la expresión hubiera sido
 ``multWithLog :: Writer () Int``. Sin embargo, el registro hubira sido el
 mismo. Aquí lo tienes en acción:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> runWriter multWithLog
     (15,["Got number: 3","Got number: 5","Gonna multiply these two"])
@@ -422,7 +413,7 @@ no es 0 así que volvemos a aplicar el algoritmo para obtener 1 y 0, ya que
 dividir 2 por 1 nos da como resto 0. Finalmente, como el segundo número es 0,
 el resultado final es 1. Vamos a ver si Haskell opina lo mismo:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> gcd' 8 3
     1
@@ -478,7 +469,7 @@ Luego, el primer componente de la dupla será el resultado. ::
 cadenas, vamos a utilizar ``mapM_ putStrLn`` par mostrar las cadenas por
 pantalla:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> mapM_ putStrLn $ snd $ runWriter (gcd' 8 3)
     8 mod 3 = 2
@@ -493,7 +484,6 @@ se encargue de los registros por nosotros. Podemos añadir este mecanismo de
 registro casi a cualquier función. Solo tenemos que remplazar los valores
 normales por valores del tipo ``Writer`` y cambiar la aplicación normal de
 funciones por ``>>=`` (o por expresiones ``do`` si vemos que es más legible).
-
 
 Construcción de listas ineficiente
 ''''''''''''''''''''''''''''''''''
@@ -541,7 +531,7 @@ añade el paso actual al registro, pero el paso actual debe ir al final del
 registro que a sido producido por la recursión. Al final, devuelve el
 resultado de la recursión como resultado final.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> mapM_ putStrLn $ snd $ runWriter (gcdReverse 8 3)
     Finished with 1
@@ -551,7 +541,6 @@ resultado de la recursión como resultado final.
 
 Es ineficiente porque acaba asociando el uso de ``++`` por la izquierda en
 lugar de por la derecha.
-
 
 Listas de diferencia
 ''''''''''''''''''''
@@ -619,7 +608,7 @@ Aquí esta la instancia de ``Monoid``: ::
 Fíjate que ``mempty`` es igual a ``id`` y ``mappend`` es en realidad una
 composición de funciones. Vamos a ver como funciona:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> fromDiffList (toDiffList [1,2,3,4] `mappend` toDiffList [1,2,3])
     [1,2,3,4,1,2,3]
@@ -643,7 +632,7 @@ Solo tenemos que cambiar el tipo del monoide de ``[String]`` a ``DiffList
 String`` y luego cuando utilizamos ``tell`` convertir las listas normales a
 listas de diferencia con ``toDiffList``. Vamos a ver si se parecen:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> mapM_ putStrLn . fromDiffList . snd . runWriter $ gcdReverse 110 34
     Finished with 2
@@ -655,7 +644,6 @@ Ejecutamos ``gcdReverse 110 34``, luego utilizamos ``runWriter`` para extraer
 desde ``newtype``, luego aplicamos ``snd`` para obtener el registro, y para
 terminar aplicamos ``fromDiffList`` para convertir la lista de diferencia en
 una lista normal que luego mostramos por pantalla.
-
 
 Comparando el rendimiento
 '''''''''''''''''''''''''
@@ -680,7 +668,7 @@ De cualquier modo, si cargamos esta función en *GHCi*  y la aplicamos a un
 número muy grande, como ``500000``, veremos que empieza a contar desde ``0``
 rápidamente.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> mapM_ putStrLn . fromDiffList . snd . runWriter $ finalCountDown 500000
     0
@@ -699,7 +687,7 @@ Sin embargo, si cambiamos la función para que utilice listas normales: ::
 
 Y luego le decimos a *GHCi* que empiece a contar:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> mapM_ putStrLn . snd . runWriter $ finalCountDown 500000
 
@@ -713,7 +701,6 @@ mientras que las listas normales tardan una eternidad.
 Por cierto, te estará rondando por la cabeza el estribillo de la canción
 *Final Countdown* de *Europe*, así que, ¡disfrútala!
 
-
 ¿Reader? O no, otra vez la misma broma...
 -----------------------------------------
 
@@ -725,7 +712,7 @@ que ``g``, aplicará la función ``g`` y luego aplicará ``f`` a su resultado.
 Básicamente estamos creando una función igual que ``g``, solo que en vez de
 devolver su resultado, devuelve el resultado de aplicar ``f``. Por ejemplo:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let f = (*5)
     ghci> let g = (+3)
@@ -735,7 +722,7 @@ devolver su resultado, devuelve el resultado de aplicar ``f``. Por ejemplo:
 También vimos que las funciones son funtores aplicativos. Nos permiten operar
 sobre funciones como si se tratasen de los resultados. Un ejemplo:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let f = (+) <$> (*2) <*> (+10)
     ghci> f 3
@@ -802,7 +789,7 @@ valor monádico que contendrá algún resultado. En este caso crea una función
 que contendrá ``(a+b)`` como resultado. Si lo probamos veremos que obtenemos
 los mismos resultados:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> addStuff 3
     19
@@ -829,10 +816,8 @@ será igual para todas, podemos utilizar la mónada lectora para extraer sus
 futuros resultados y la implementación de ``>>=`` se encargará de que todo
 funcione al final.
 
-
 Mónadas monas con estado
 ------------------------
-
 
 .. image:: /images/texas.png
    :align: left
@@ -903,7 +888,6 @@ cierto contexto. El valor real es es el resultado, mientras que el contexto es
 el estado inicial del que hemos extraído el resultado, generando así un nuevo
 estado.
 
-
 Pilas y pilones
 '''''''''''''''
 
@@ -954,7 +938,7 @@ pila que llamaremos ``newStack2``. Luego retiramos otro elemento de
 ``newStack2`` y obtenemos un número ``b`` y una pila ``newStack3``. Devolvemos
 una dupla que contendrá ese número y esa tupla. Vamos a probarlo:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> stackManip [5,8,2,1]
     (5,[8,2,1])
@@ -977,7 +961,6 @@ esto? ::
 Bueno, pues usando la mónada estado podemos hacerlo. Gracias a ella podemos
 tomar cómputos con estado como estos y usarlos sin tener que preocuparnos por
 manejar el estado de forma manual.
-
 
 La mónada estado
 ''''''''''''''''
@@ -1059,7 +1042,7 @@ ejemplo anterior que apilaba un ``3`` y luego retiraba  dos números así: ::
 estado? Cuando extraemos el contenido del ``newtype`` obtenemos una función
 a la que tenemos que pasarle el estado inicial:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> runState stackManip [5,8,2,1]
     (5,[8,2,1])
@@ -1088,7 +1071,7 @@ Así sería el código: ::
 
 Bastante sencillo. Vamos a ejecutarlo junto a un estado inicial.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> runState stackStuff [9,0,2,1,0]
     ((),[8,3,0,2,1,0])
@@ -1151,7 +1134,6 @@ caso de la mónada estado, en realidad la mónada es ``State s``, así que si
 ``s`` fuera distinta, estaríamos utilizando ``>>=`` entre dos mónadas
 distintas.
 
-
 Aleatoriedad y la mónada estado
 '''''''''''''''''''''''''''''''
 
@@ -1196,7 +1178,7 @@ número aleatorio y un nuevo generador, el cual será pasado al siguiente y así
 sucesivamente. Utilizamos ``return (a,b,c)`` para devolver ``(a,b,c)`` como
 resultado manteniendo constante el generador más reciente.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> runState threeCoins (mkStdGen 33)
     ((True,False,True),680029187 2103410263)
@@ -1204,10 +1186,8 @@ resultado manteniendo constante el generador más reciente.
 Ahora realizar todo este tipo de tareas que requieren el uso de algún tipo de
 estado es mucho más cómodo.
 
-
 Errores, errores, errores...
 ----------------------------
-
 
 Sabemos que ``Maybe`` se utiliza para dar el contexto de un posible fallo a
 los valores. Un valor puede ser ``Just algo`` o ``Nothing``. Sin embargo,
@@ -1221,7 +1201,7 @@ información acerca del fallo. Un valor del tipo ``Either e a`` puede ser un
 valor ``Right``, lo cual representa un respuesta correcta, o un valor
 ``Left``, que representa un fallo. Por ejemplo:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :t Right 4
     Right 4 :: (Num t) => Either a t
@@ -1261,7 +1241,7 @@ en forma de cadena y devuelve ese valor en forma de error. Un buen ejemplo de
 instancia de ``Error`` es el tipo ``String``. Para el caso de ``String``, la
 función ``strMsg`` simplemente devuelve la cadena que se le pasa:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :t strMsg
     strMsg :: (Error a) => String -> a
@@ -1274,7 +1254,7 @@ una expresión ``do``, se devuelve valor ``Left`` para representar este error.
 
 De cualquier modo, aquí tienes unos cuantos ejemplos:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> Left "boom" >>= \x -> return (x+1)
     Left "boom"
@@ -1289,7 +1269,7 @@ este caso la función devuelve un valor ``Left`` de todas formas.
 Si intentamos pasar una valor ``Right``a una función que también devuelve un
 valor ``Right`` en *GHCi*, nos encontraremos con un error peculiar.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> Right 3 >>= \x -> return (x + 100)
 
@@ -1305,7 +1285,7 @@ a la restricción ``Error e`` de la instancia de ``Monad``. Así que si no
 quieres ver más errores de este tipo cuando trabajes con la mónada ``Either``,
 añade un anotación de tipo explícita:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> Right 3 >>= \x -> return (x + 100) :: Either String Int
     Right 103
@@ -1319,10 +1299,8 @@ nuestro buen amigo Pierre. A modo de ejercicio, puedes reescribir estas
 funciones con la mónada error de forma que cuando el funambulista se caiga,
 podamos informar del número de pájaros que había en la barra cuando se cayó.
 
-
 Algunas funciones monádicas útiles
 ----------------------------------
-
 
 En esta sección vamos a ver una cuantas funciones que pueden operar con
 valores monádicos o devolver valores monádicos como resultado (¡o ambas
@@ -1330,7 +1308,6 @@ cosas!). Normalmente no referimos a estas funciones como funciones monádicas.
 Mientras que algunas de éstas nos serán totalmente desconocidas, otras son las
 versiones monádicas de algunas funciones que ya conocemos, como ``filter`` o
 ``foldl``.
-
 
 ``liftM`` y sus amigos
 ''''''''''''''''''''''
@@ -1374,7 +1351,7 @@ las leyes de los funtores y de las mónadas, estas dos funciones hacen lo mismo
 ``pure`` y ``return``, solo que una tiene la restricción de clase
 ``Applicative`` y otra la de ``Monad``. Vamos a probar ``liftM``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> liftM (*3) (Just 8)
     Just 24
@@ -1399,14 +1376,14 @@ hubiese sido ``(1,[2,3,4])``.
 
 Esta es la implementación de ``liftM``: ::
 
-    liftM :: (Monad m) => (a -> b) -> m a -> m b  
+    liftM :: (Monad m) => (a -> b) -> m a -> m b
     liftM f m = m >>= (\x -> return (f x))
 
 O con notación ``do``: ::
 
-    liftM :: (Monad m) => (a -> b) -> m a -> m b  
-    liftM f m = do  
-        x <- m  
+    liftM :: (Monad m) => (a -> b) -> m a -> m b
+    liftM f m = do
+        x <- m
         return (f x)
 
 Pasamos el valor monádico ``m`` a la función y luego aplicamos la función
@@ -1420,20 +1397,20 @@ motivo, podemos concluir que las mónadas son más potentes que los funtores
 normales.
 
 La clase de tipos ``Applicative`` nos permite aplicar funciones entre valores
-con un contexto como si se trataran de funciones normales. 
+con un contexto como si se trataran de funciones normales.
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> (+) <$> Just 3 <*> Just 5  
-    Just 8  
-    ghci> (+) <$> Just 3 <*> Nothing  
+    ghci> (+) <$> Just 3 <*> Just 5
+    Just 8
+    ghci> (+) <$> Just 3 <*> Nothing
     Nothing
 
 Utilizar el estilo aplicativo hace las cosas muy fáciles. ``<$>`` es ``fmap``
 y ``<*>`` es una función de la clase de tipos ``Applicative`` que tiene el
 siguiente tipo: ::
 
-    (<*>) :: (Applicative f) => f (a -> b) -> f a -> f b  
+    (<*>) :: (Applicative f) => f (a -> b) -> f a -> f b
 
 Es parecida a ``fmap``, solo que la función en si misma posee un contexto.
 Tenemos que extraer de alguna forma el resultado de ``f a`` para poder mapear
@@ -1447,10 +1424,10 @@ ser implementado utilizando lo que nos ofrece la clase de tipos ``Monad``. La
 función ``ap`` es básicamente ``<*>``, solo que posee un restricción de clase
 ``Monad`` en lugar de ``Applicative``. Aquí tienes la definición: ::
 
-    ap :: (Monad m) => m (a -> b) -> m a -> m b  
-    ap mf m = do  
-        f <- mf  
-        x <- m  
+    ap :: (Monad m) => m (a -> b) -> m a -> m b
+    ap mf m = do
+        f <- mf
+        x <- m
         return (f x)
 
 ``mf`` es un valor monádico cuyo resultado es una función. Como tanto la
@@ -1458,15 +1435,15 @@ función como el valor están dentro de un contexto, extraemos la función del
 contexto y la llamamos ``f``. Luego extraemos el valor y lo llamamos ``x``.
 Para terminar aplicamos la función sobre el valor y devolvemos el resultado.
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> Just (+3) <*> Just 4  
-    Just 7  
-    ghci> Just (+3) `ap` Just 4  
-    Just 7  
-    ghci> [(+1),(+2),(+3)] <*> [10,11]  
-    [11,12,12,13,13,14]  
-    ghci> [(+1),(+2),(+3)] `ap` [10,11]  
+    ghci> Just (+3) <*> Just 4
+    Just 7
+    ghci> Just (+3) `ap` Just 4
+    Just 7
+    ghci> [(+1),(+2),(+3)] <*> [10,11]
+    [11,12,12,13,13,14]
+    ghci> [(+1),(+2),(+3)] `ap` [10,11]
     [11,12,12,13,13,14]
 
 Ahora podemos ver que las mónadas son también más potentes que los funtores
@@ -1481,7 +1458,7 @@ simplemente estableciendo que ``fmap`` es igual a ``liftM``.
 La función ``liftA2`` es una función de conveniencia para aplicar una función
 entre dos valores aplicativos. Su definición es así de sencilla: ::
 
-    liftA2 :: (Applicative f) => (a -> b -> c) -> f a -> f b -> f c  
+    liftA2 :: (Applicative f) => (a -> b -> c) -> f a -> f b -> f c
     liftA2 f x y = f <$> x <*> y
 
 La función ``liftM2`` hace exactamente lo mismo, solo que posee una
@@ -1494,7 +1471,6 @@ y funtores aplicativos, no necesariamente poseen una instancia de ``Functor``
 y ``Applicative``, y esta es la  razón por la que acabamos de ver las
 funciones equivalentes entre los funtores y las mónadas.
 
-
 La función ``join``
 '''''''''''''''''''
 
@@ -1502,22 +1478,22 @@ Piensa en esto: si el resultado de un valor monádico es otro valor monádico,
 es decir, si un valor monádico es anidado dentro de otro, ¿Podemos convertir
 ambos en un único valor monádico? Por ejemplo, si tenemos ``Just (Just 9)``,
 ¿Podemos convertirlo en ``Just 9``? Pues resulta que convertir valores
-monádicos anidados en valores monádicos simples es una de las propiedades 
+monádicos anidados en valores monádicos simples es una de las propiedades
 únicas de las mónadas. Por este motivo tiene su razón de ser la función
 ``join``. ::
 
-    join :: (Monad m) => m (m a) -> m a  
+    join :: (Monad m) => m (m a) -> m a
 
 Toma una un valor monádico que contiene otro valor monádico y devuelve un solo
 valor monádico. Aquí tienes un ejemplo de su uso con valores ``Maybe``:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> join (Just (Just 9))  
-    Just 9  
-    ghci> join (Just Nothing)  
-    Nothing  
-    ghci> join Nothing  
+    ghci> join (Just (Just 9))
+    Just 9
+    ghci> join (Just Nothing)
+    Nothing
+    ghci> join Nothing
     Nothing
 
 La primera línea tiene un cómputo correcto como resultado de otro cómputo
@@ -1532,18 +1508,18 @@ es también un fallo.
 
 Unir, o aplanar listas es bastante intuitivo:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> join [[1,2,3],[4,5,6]]  
-    [1,2,3,4,5,6]  
-    
+    ghci> join [[1,2,3],[4,5,6]]
+    [1,2,3,4,5,6]
+
 Como puedes ver, para listas ``join`` es igual que ``concat``. Para unir un
 valor ``Writer`` cuyo resultado es también un valor ``Writer`` tenemos que
 aplicar ``mappend`` al valor monádico.
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> runWriter $ join (Writer (Writer (1,"aaa"),"bbb"))  
+    ghci> runWriter $ join (Writer (Writer (1,"aaa"),"bbb"))
     (1,"bbbaaa")
 
 El valor monádico exterior ``"bbb"`` se utiliza primero y luego se le añade
@@ -1553,22 +1529,22 @@ esto podremos examinar sus contenidos.
 
 Unir valores ``Either`` es muy parecido a unir valores ``Maybe``:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> join (Right (Right 9)) :: Either String Int  
-    Right 9  
-    ghci> join (Right (Left "error")) :: Either String Int  
-    Left "error"  
-    ghci> join (Left "error") :: Either String Int  
+    ghci> join (Right (Right 9)) :: Either String Int
+    Right 9
+    ghci> join (Right (Left "error")) :: Either String Int
+    Left "error"
+    ghci> join (Left "error") :: Either String Int
     Left "error"
 
 Si aplicamos ``join`` a un cómputo cuyo resultado sea otro cómputo con
 estado, el resultado será un cómputo con estado que primero ejecutará el
 cómputo exterior y luego el interior. Mira:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> runState (join (State $ \s -> (push 10,1:2:s))) [0,0,0]  
+    ghci> runState (join (State $ \s -> (push 10,1:2:s))) [0,0,0]
     ((),[10,1,2,0,0,0])
 
 Aquí la función lambda toma un estado y apila ``2`` y ``1`` sobre la pila
@@ -1579,9 +1555,9 @@ de la pila.
 
 La implementación de ``join`` es la siguiente: ::
 
-    join :: (Monad m) => m (m a) -> m a  
-    join mm = do  
-        m <- mm  
+    join :: (Monad m) => m (m a) -> m a
+    join mm = do
+        m <- mm
         m
 
 Como el resultado de ``mm`` es un valor monádico, obtenemos ese resultado y
@@ -1592,15 +1568,15 @@ por ejemplo, los valores ``Maybe`` solo devuelven ``Just`` cuando tanto el
 valor exterior como el valor interior son ambos ``Just``. Así se vería esto
 si ``mm`` fuera desde el principio ``Just (Just 8)``: ::
 
-    joinedMaybes :: Maybe Int  
-    joinedMaybes = do  
-        m <- Just (Just 8)  
-        m  
+    joinedMaybes :: Maybe Int
+    joinedMaybes = do
+        m <- Just (Just 8)
+        m
 
 .. image:: /images/tipi.png
    :align: right
    :alt: ¡Incluso yo soy un ajente de la ley!
-   
+
 Quizá lo más interesante de ``join`` es que funciona para cualquier mónada,
 pasar un valor monádico a una función con ``>>=`` es lo mismo que mapear esa
 función sobre el valor monádico y luego utilizar ``join`` para unir el
@@ -1618,7 +1594,6 @@ El hecho de que ``m >>= f`` sea siempre igual a ``join (fmap f m)`` es muy
 siempre es más fácil averiguar como se deben unir dos valores monádicos
 anidados que averiguar como implementar ``>>=``.
 
-
 filterM
 '''''''
 
@@ -1627,7 +1602,7 @@ utilizadas en Haskell. Toma un predicado y una lista y la filtra de forma que
 la lista resultante solo contenga los resultados que satisfagan el predicado.
 ::
 
-    filter :: (a -> Bool) -> [a] -> [a] 
+    filter :: (a -> Bool) -> [a] -> [a]
 
 El predicado toma un elemento de la lista y devuelve un valor ``Bool``. Pero,
 ¿y si el valor ``Bool`` que devuelve el predicado fuera en realidad un valor
@@ -1644,7 +1619,7 @@ un contexto, de otro modo el contexto de cada ``Bool`` se perdería.
 La función ``filterM`` de ``Control.Monad`` hace exactamente lo que estamos
 buscando. ::
 
-    filterM :: (Monad m) => (a -> m Bool) -> [a] -> m [a]  
+    filterM :: (Monad m) => (a -> m Bool) -> [a] -> m [a]
 
 El predicado devuelve un valor monádico cuyo resultado es un ``Bool``, pero
 como es un valor monádico, su contexto puede ser cualquier cosa, desde un
@@ -1655,22 +1630,22 @@ Vamos a tomar una lista y vamos a filtrarla de forma que solo nos quedemos con
 los números que sean menores que 4. Para empezar, vamos a utilizar la función
 normal ``filter``:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> filter (\x -> x < 4) [9,1,5,2,10,3]  
+    ghci> filter (\x -> x < 4) [9,1,5,2,10,3]
     [1,2,3]
 
 Muy fácil. Ahora, vamos hacer que este predicado, además de devolver
 ``True`` o ``False``, también adjunte un registro indicando lo que ha hecho.
 Por supuesto vamos a utilizar la mónada ``Writer``. ::
 
-    keepSmall :: Int -> Writer [String] Bool  
-    keepSmall x  
-        | x < 4 = do  
-            tell ["Keeping " ++ show x]  
-            return True  
-        | otherwise = do  
-            tell [show x ++ " is too large, throwing it away"]  
+    keepSmall :: Int -> Writer [String] Bool
+    keepSmall x
+        | x < 4 = do
+            tell ["Keeping " ++ show x]
+            return True
+        | otherwise = do
+            tell [show x ++ " is too large, throwing it away"]
             return False
 
 En lugar de devolver un ``Bool``, esta función devuelve un
@@ -1682,22 +1657,22 @@ Ahora vamos a utilizar ``filterM`` con una lista. Como el predicado devuelve
 un valor ``Writer``, el resultado de la lista será también un valor
 ``Writer``.
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> fst $ runWriter $ filterM keepSmall [9,1,5,2,10,3]  
+    ghci> fst $ runWriter $ filterM keepSmall [9,1,5,2,10,3]
     [1,2,3]
 
 Examinando el resultado del valor de tipo ``Writer`` vemos que todo está en
 orden. Ahora, vamos a mostrar el registro:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> mapM_ putStrLn $ snd $ runWriter $ filterM keepSmall [9,1,5,2,10,3]  
-    9 is too large, throwing it away  
-    Keeping 1  
-    5 is too large, throwing it away  
-    Keeping 2  
-    10 is too large, throwing it away  
+    ghci> mapM_ putStrLn $ snd $ runWriter $ filterM keepSmall [9,1,5,2,10,3]
+    9 is too large, throwing it away
+    Keeping 1
+    5 is too large, throwing it away
+    Keeping 2
+    10 is too large, throwing it away
     Keeping 3
 
 Increíble. Simplemente utilizando un predicado monádico con ``filterM`` somos
@@ -1710,13 +1685,13 @@ conjunto de todos los posible subconjuntos de éste. Así que si tenemos un
 conjunto como ``[1,2,3]``, su superconjunto incluirá los siguientes
 conjuntos: ::
 
-    [1,2,3]  
-    [1,2]  
-    [1,3]  
-    [1]  
-    [2,3]  
-    [2]  
-    [3]  
+    [1,2,3]
+    [1,2]
+    [1,3]
+    [1]
+    [2,3]
+    [2]
+    [3]
     []
 
 En otras palabras, obtener el superconjunto es como obtener todas las posibles
@@ -1730,23 +1705,22 @@ mantener o lo debemos eliminar? Bueno, en realidad queremos hacer ambas cosas.
 Resumiendo, vamos a filtrar una lista y vamos a un utilizar un predicado no
 determinista que elimine y mantenga cada elemento de la lista. ::
 
-    powerset :: [a] -> [[a]]  
-    powerset xs = filterM (\x -> [True, False]) xs  
-    
+    powerset :: [a] -> [[a]]
+    powerset xs = filterM (\x -> [True, False]) xs
+
 ¿Qué es esto? Bueno, elegimos eliminar y mantener cada elemento,
 independientemente del valor de dicho elemento. Tenemos un predicado no
 determinista, así que el resultado también será no determinista y por lo tanto
 su tipo será una lista de listas. Vamos a probarlo.
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> powerset [1,2,3]  
+    ghci> powerset [1,2,3]
     [[1,2,3],[1,2],[1,3],[1],[2,3],[2],[3],[]]
 
 Quizá esto puede que no se entienda a la primera, pero si consideramos las
 listas como valores no deterministas que no saben que valor escoger y por
 tanto deciden ser todos a la vez, es más fácil de ver.
-
 
 ``foldM``
 '''''''''
@@ -1769,9 +1743,9 @@ El valor que devuelve la función binaria es un valor monádico por lo tanto
 el valor final del pliegue también lo es. Vamos a sumar una lista de números
 con un pliegue:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> foldl (\acc x -> acc + x) 0 [2,8,3,1]  
+    ghci> foldl (\acc x -> acc + x) 0 [2,8,3,1]
     14
 
 El acumulador inicial es ``0`` y luego se suma ``2`` al acumulador, el
@@ -1788,26 +1762,25 @@ Debido a esta nueva posibilidad de fallo, vamos a hacer que la función binaria
 devuelva un acumulador dentro de un tipo ``Maybe`` en lugar de un acumulador
 normal. Así sería la función binaria: ::
 
-    binSmalls :: Int -> Int -> Maybe Int  
-    binSmalls acc x  
-        | x > 9     = Nothing  
+    binSmalls :: Int -> Int -> Maybe Int
+    binSmalls acc x
+        | x > 9     = Nothing
         | otherwise = Just (acc + x)
 
 Como la función binaria es ahora una función monádica, ya no podemos utilizar
 un pliegue normal como ``foldl``, tendremos que usar un pliegue monádico.
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> foldM binSmalls 0 [2,8,3,1]  
-    Just 14  
-    ghci> foldM binSmalls 0 [2,11,3,1]  
-    Nothing  
-    
+    ghci> foldM binSmalls 0 [2,8,3,1]
+    Just 14
+    ghci> foldM binSmalls 0 [2,11,3,1]
+    Nothing
+
 ¡Genial! Como había un número mayor que ``9``, el resultado final fue
 ``Nothing``. También es útil realizar un pliegue con una función binaria que
 devuelva un valor ``Writer``, ya que de este modo podemos obtener un registro
 conforme recorremos la lista.
-
 
 Creando una versión segura de la calculadora RPN
 ''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1831,19 +1804,19 @@ o sumaba los dos elementos superiores, o los dividía, etc.
 
 Este era la función principal: ::
 
-    import Data.List  
+    import Data.List
 
-    solveRPN :: String -> Double  
+    solveRPN :: String -> Double
     solveRPN = head . foldl foldingFunction [] . words
 
 Convertíamos la expresión en una lista de cadenas, la plegábamos utilizando
 una función binaria y luego devolvíamos el único elemento que quedaba en la
 pila. Así era la función binaria: ::
 
-    foldingFunction :: [Double] -> String -> [Double]  
-    foldingFunction (x:y:ys) "*" = (x * y):ys  
-    foldingFunction (x:y:ys) "+" = (x + y):ys  
-    foldingFunction (x:y:ys) "-" = (y - x):ys  
+    foldingFunction :: [Double] -> String -> [Double]
+    foldingFunction (x:y:ys) "*" = (x * y):ys
+    foldingFunction (x:y:ys) "+" = (x + y):ys
+    foldingFunction (x:y:ys) "-" = (y - x):ys
     foldingFunction xs numberString = read numberString:xs
 
 En este caso el acumulador del pliegue era la pila, la cual representábamos
@@ -1857,7 +1830,7 @@ apilábamos.
 Primero vamos a hacer que esta función pueda fallar de forma correcta. Su
 declaración de tipo cambiará de esta forma: ::
 
-    foldingFunction :: [Double] -> String -> Maybe [Double]  
+    foldingFunction :: [Double] -> String -> Maybe [Double]
 
 Así que ahora su resultado será o bien un valor ``Just`` con una pila o bien
 fallará con ``Nothing``.
@@ -1869,26 +1842,26 @@ parte de la cadena que no ha consumido. Vamos a decir que siempre tiene que
 leer toda la cadena para que funcione correctamente y vamos a crear una
 función ``readMaybe`` por conveniencia. ::
 
-    readMaybe :: (Read a) => String -> Maybe a  
-    readMaybe st = case reads st of [(x,"")] -> Just x  
+    readMaybe :: (Read a) => String -> Maybe a
+    readMaybe st = case reads st of [(x,"")] -> Just x
                                     _ -> Nothing
 
-La probamos: 
+La probamos:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> readMaybe "1" :: Maybe Int  
-    Just 1  
-    ghci> readMaybe "GO TO HELL" :: Maybe Int  
+    ghci> readMaybe "1" :: Maybe Int
+    Just 1
+    ghci> readMaybe "GO TO HELL" :: Maybe Int
     Nothing
 
 Vale, parece que funciona. Ahora vamos a convertir la función binaria en
 una función binaria que puede fallar. ::
 
-    foldingFunction :: [Double] -> String -> Maybe [Double]  
-    foldingFunction (x:y:ys) "*" = return ((x * y):ys)  
-    foldingFunction (x:y:ys) "+" = return ((x + y):ys)  
-    foldingFunction (x:y:ys) "-" = return ((y - x):ys)  
+    foldingFunction :: [Double] -> String -> Maybe [Double]
+    foldingFunction (x:y:ys) "*" = return ((x * y):ys)
+    foldingFunction (x:y:ys) "+" = return ((x + y):ys)
+    foldingFunction (x:y:ys) "-" = return ((y - x):ys)
     foldingFunction xs numberString = liftM (:xs) (readMaybe numberString)
     foldingFunction _ _ = fail "¡whops!"
 
@@ -1901,27 +1874,27 @@ resultado. Es decir, si la pila ``xs`` es ``[1.0,2.0]`` y
 ``[1.0,2.0,3.0]``. Si ``readMaybe numberString`` devuelve ``Nothing`` el
 resultado final será ``Nothing``. Vamos a probar esta función:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> foldingFunction [3,2] "*"  
-    Just [6.0]  
-    ghci> foldingFunction [3,2] "-"  
-    Just [-1.0]  
-    ghci> foldingFunction [] "*"  
-    Nothing  
-    ghci> foldingFunction [] "1"  
-    Just [1.0]  
-    ghci> foldingFunction [] "1 wawawawa"  
+    ghci> foldingFunction [3,2] "*"
+    Just [6.0]
+    ghci> foldingFunction [3,2] "-"
+    Just [-1.0]
+    ghci> foldingFunction [] "*"
+    Nothing
+    ghci> foldingFunction [] "1"
+    Just [1.0]
+    ghci> foldingFunction [] "1 wawawawa"
     Nothing
 
 ¡Parece que funciona! Ahora es hora de mejorar la función ``solveRPN`` ¡Aquí
 la tienen! ::
 
-    import Data.List  
+    import Data.List
 
-    solveRPN :: String -> Maybe Double  
-    solveRPN st = do  
-        [result] <- foldM foldingFunction [] (words st)  
+    solveRPN :: String -> Maybe Double
+    solveRPN st = do
+        [result] <- foldM foldingFunction [] (words st)
         return result
 
 Al igual que antes, tomamos una cadena y la dividimos en palabras. Luego,
@@ -1940,21 +1913,20 @@ valor del tipo ``Maybe``.
 
 Probémoslo:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> solveRPN "1 2 * 4 +"  
-    Just 6.0  
-    ghci> solveRPN "1 2 * 4 + 5 *"  
-    Just 30.0  
-    ghci> solveRPN "1 2 * 4"  
-    Nothing  
-    ghci> solveRPN "1 8 wharglbllargh"  
+    ghci> solveRPN "1 2 * 4 +"
+    Just 6.0
+    ghci> solveRPN "1 2 * 4 + 5 *"
+    Just 30.0
+    ghci> solveRPN "1 2 * 4"
+    Nothing
+    ghci> solveRPN "1 8 wharglbllargh"
     Nothing
 
 El primer fallo sucede porque la pila final no contiene un único elemento y
 por tanto el ajuste de patrones contenido en la expresión ``do`` falla. El
 segundo fallo se debe a que ``readMaybe`` devuelve ``Nothing``.
-
 
 Componiendo funciones monádicas
 '''''''''''''''''''''''''''''''
@@ -1962,15 +1934,15 @@ Componiendo funciones monádicas
 Cuando hablamos de las leyes de las mónadas, vimos que la función ``<=<`` era
 parecida a la composición de funciones, solo que en lugar de tratar con
 funciones normales ``a -> b``, funcionaba con funciones monádicas como
-``a -> m b``. Por ejemplo: 
+``a -> m b``. Por ejemplo:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let f = (+1) . (*100)  
-    ghci> f 4  
-    401  
-    ghci> let g = (\x -> return (x+1)) <=< (\x -> return (x*100))  
-    ghci> Just 4 >>= g  
+    ghci> let f = (+1) . (*100)
+    ghci> f 4
+    401
+    ghci> let g = (\x -> return (x+1)) <=< (\x -> return (x*100))
+    ghci> Just 4 >>= g
     Just 401
 
 En este ejemplo primero componemos dos funciones normales, y luego las
@@ -1981,16 +1953,16 @@ monádicas, y luego le pasamos ``Just 4`` a la función resultante utilizando
 Si tenemos una lista de funciones, podemos componerlas en una sola gran
 función utilizando ``id`` como acumulador inicial y la función ``.`` como
 función binaria. O también utilizando la función ``foldr1``. Aquí tienes un
-ejemplo: 
+ejemplo:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let f = foldr (.) id [(+1),(*100),(+1)]  
-    ghci> let g = foldr1 (.) [(+1),(*100),(+1)]  
-    ghci> f 1  
+    ghci> let f = foldr (.) id [(+1),(*100),(+1)]
+    ghci> let g = foldr1 (.) [(+1),(*100),(+1)]
+    ghci> f 1
     201
-    ghci> g 1  
-    201    
+    ghci> g 1
+    201
 
 La función ``f`` toma un número y luego le suma ``1``, luego multiplica el
 resultado por ``100`` y luego le suma ``1`` al resultado anterior. De
@@ -2008,12 +1980,12 @@ caballo y devolvía todos los posibles movimientos que podía tomar. Luego,
 para generar todos los posibles posiciones que podía alcanzar en tres
 movimientos utilizábamos una función como estas: ::
 
-    in3 start = return start >>= moveKnight >>= moveKnight >>= moveKnight   
+    in3 start = return start >>= moveKnight >>= moveKnight >>= moveKnight
 
 Y para comprobar si el caballo podía llegar desde ``start`` hasta ``end`` en
 tres movimientos utilizábamos: ::
 
-    canReachIn3 :: KnightPos -> KnightPos -> Bool  
+    canReachIn3 :: KnightPos -> KnightPos -> Bool
     canReachIn3 start end = end `elem` in3 start
 
 Utilizando la composición de funciones podemos crear una función como ``in3``,
@@ -2023,12 +1995,12 @@ movimientos. Si nos fijamos en ``in3``, vemos que hemos utilizado
 ``moveKnight`` tres veces y hemos utilizado ``>>=`` en cada paso para pasar
 las posibles posiciones anteriores. Ahora vamos a hacerlo más general. ::
 
-    import Data.List  
+    import Data.List
 
-    inMany :: Int -> KnightPos -> [KnightPos]  
+    inMany :: Int -> KnightPos -> [KnightPos]
     inMany x start = return start >>= foldr (<=<) return (replicate x moveKnight)
-    
-Primero utilizamos ``replicate`` para crear una lista que contenga ``x`` 
+
+Primero utilizamos ``replicate`` para crear una lista que contenga ``x``
 veces la función ``moveKnight``. Luego, componemos monádicamente todas esas
 funciones en una, lo cual resulta en una función que toma una posición incial
 y mueve el caballo de forma no determinista ``x`` veces. Luego, simplemente
@@ -2038,18 +2010,16 @@ pasamos a la función.
 Ahora también podemos cambiar la función ``canReachIn3`` para que sea más
 general: ::
 
-    canReachIn :: Int -> KnightPos -> KnightPos -> Bool  
+    canReachIn :: Int -> KnightPos -> KnightPos -> Bool
     canReachIn x start end = end `elem` inMany x start
-
 
 Creando mónadas
 ---------------
 
-
 .. image:: /images/spearhead.png
    :align: center
    :alt: kewl
-   
+
 En esta sección vamos a ver un ejemplo de como se crea un tipo, como se
 identifica que se trata de una mónada y luego como darle una instancia
 ``Monad`` apropiada. Normalmente no nos ponemos a crear una mónada por el
@@ -2058,7 +2028,7 @@ propósito de modelar un aspecto de algún problema y luego si vemos que ese
 tipo representa valores con un contexto y puede comportarse como una mónada,
 le damos una instancia de ``Monad``.
 
-Como ya hemos visto, las listas se utilizan para representar valores 
+Como ya hemos visto, las listas se utilizan para representar valores
 no deterministas. Una lista como ``[3,5,9]`` puede ser vista como un solo
 valor no determinista que no puede decidir que valor ser. Cuando pasamos una
 lista a una función con ``>>=``, simplemente crea todas las posibilidades
@@ -2076,12 +2046,12 @@ respuesta.
 Digamos que cada elemento de la lista va acompañado de otro valor, la
 probabilidad de que ocurra. Podría tener sentido representarlo así:
 
-.. code-block:: console
+.. code-block:: none
 
-    [(3,0.5),(5,0.25),(9,0.25)]  
+    [(3,0.5),(5,0.25),(9,0.25)]
 
 En las matemáticas, las probabilidades no se suelen representar con
-porcentajes sino con valores reales que van desde el 0 hasta el 1. Un 0 
+porcentajes sino con valores reales que van desde el 0 hasta el 1. Un 0
 significa que no hay ninguna posibilidad de que ocurra un suceso mientras que
 un 1 representa que el suceso va ocurrir sí o sí. Los número en coma flotante
 pueden ser muy eficientes ya que tienden a perder precisión, así que Haskell
@@ -2091,13 +2061,13 @@ precisión. Este tipo se llama ``Rational`` y reside en el módulo
 forma de fracción. Separamos el numerador y el denominador por ``%``. Aquí
 tienes unos ejemplos:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> 1%4  
-    1 % 4  
-    ghci> 1%2 + 1%2  
-    1 % 1  
-    ghci> 1%3 + 5%4  
+    ghci> 1%4
+    1 % 4
+    ghci> 1%2 + 1%2
+    1 % 1
+    ghci> 1%3 + 5%4
     19 % 12
 
 La primera línea representa un cuarto. En la segunda línea sumamos dos
@@ -2106,9 +2076,9 @@ cinco cuartos y obtenemos diecinueve docenas de huevos. Vamos a utilizar
 número ``Rational`` en lugar de números en coma flotante para representar las
 probabilidades.
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> [(3,1%2),(5,1%4),(9,1%4)]  
+    ghci> [(3,1%2),(5,1%4),(9,1%4)]
     [(3,1 % 2),(5,1 % 4),(9,1 % 4)]
 
 Vale, ``3`` tiene la mitad de posibilidades de ocurrir y ``5`` y ``9`` tienen
@@ -2119,7 +2089,7 @@ representa valores en cierto contexto. Antes de continuar, vamos representar
 esto con ``newtype`` porque algo me dice que vamos a crear alguna instancias.
 ::
 
-    import Data.Ratio  
+    import Data.Ratio
 
     newtype Prob a = Prob { getProb :: [(a,Rational)] } deriving Show
 
@@ -2129,16 +2099,16 @@ de contexto. Cuando mapeamos una función sobre una lista, la aplicamos a todos
 los elementos. Ahora también aplicaremos la función a todos los elementos,
 solo que mantendremos las probabilidades intactas. ::
 
-    instance Functor Prob where  
+    instance Functor Prob where
         fmap f (Prob xs) = Prob $ map (\(x,p) -> (f x,p)) xs
 
 Extraemos el valor del ``newtype`` utilizando un ajuste de patrones, aplicamos
 la función ``f`` a los valores mientras nos aseguramos de mantener constantes
 las probabilidades. Vamos a ver si funciona:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> fmap negate (Prob [(3,1%2),(5,1%4),(9,1%4)])  
+    ghci> fmap negate (Prob [(3,1%2),(5,1%4),(9,1%4)])
     Prob {getProb = [(-3,1 % 2),(-5,1 % 4),(-9,1 % 4)]}
 
 Otra cosa que tenemos que tener en cuenta es que todas estas probabilidades
@@ -2183,10 +2153,10 @@ sumamos todas las probabilidades dará uno como resultado.
 
 Así se representaría la situación actual: ::
 
-    thisSituation :: Prob (Prob Char)  
-    thisSituation = Prob  
-        [( Prob [('a',1%2),('b',1%2)] , 1%4 )  
-        ,( Prob [('c',1%2),('d',1%2)] , 3%4)  
+    thisSituation :: Prob (Prob Char)
+    thisSituation = Prob
+        [( Prob [('a',1%2),('b',1%2)] , 1%4 )
+        ,( Prob [('c',1%2),('d',1%2)] , 3%4)
         ]
 
 Fíjate que el tipo es ``Prob (Pron Char)``. Así que ahora que hemos averiguado
@@ -2196,22 +2166,22 @@ ya tendremos nuestra mónada lista. Aquí tenemos la función ``flattern``, tien
 este nombre porque alguien ya utilizo antes que nosotros el nombre ``join``:
 ::
 
-    flatten :: Prob (Prob a) -> Prob a  
-    flatten (Prob xs) = Prob $ concat $ map multAll xs  
+    flatten :: Prob (Prob a) -> Prob a
+    flatten (Prob xs) = Prob $ concat $ map multAll xs
         where multAll (Prob innerxs,p) = map (\(x,r) -> (x,p*r)) innerxs
 
 La función ``multAll`` toma un dupla con una lista de probabilidades y una
 probabilidad ``p`` y produce una nueva lista de probabilidades en las que
 las probabilidades de todos los elementos han sido multiplicadas por ``p``.
 Mapeamos ``multAll`` sobre cada dupla de la lista anidada y luego la aplanamos
-con ``concat``. 
+con ``concat``.
 
 Ahora que ya tenemos todo lo que necesitamos podemos escribir la instancia de
 ``Monad``. ::
 
-    instance Monad Prob where  
-        return x = Prob [(x,1%1)]  
-        m >>= f = flatten (fmap f m)  
+    instance Monad Prob where
+        return x = Prob [(x,1%1)]
+        m >>= f = flatten (fmap f m)
         fail _ = Prob []
 
 .. image:: /images/ride.png
@@ -2248,36 +2218,36 @@ saca cruz nueve de cada diez veces. Si lanzamos todas estas monedas a la vez,
 a crear unas listas de probabilidades para las monedas normales y para la
 trucada: ::
 
-    data Coin = Heads | Tails deriving (Show, Eq)  
+    data Coin = Heads | Tails deriving (Show, Eq)
 
-    coin, loadedCoin :: Prob Coin  
-    coin = Prob [(Heads,1%2),(Tails,1%2)]  
+    coin, loadedCoin :: Prob Coin
+    coin = Prob [(Heads,1%2),(Tails,1%2)]
 
     loadedCoin = Prob [(Heads,1%10),(Tails,9%10)]
 
 Luego creamos la acción de lanzar las monedas: ::
 
-    import Data.List (all)  
+    import Data.List (all)
 
-    flipThree :: Prob Bool  
-    flipThree = do  
-        a <- coin  
-        b <- coin  
-        c <- loadedCoin  
+    flipThree :: Prob Bool
+    flipThree = do
+        a <- coin
+        b <- coin
+        c <- loadedCoin
         return (all (==Tails) [a,b,c])
 
 Vemos que las probabilidades de que todas ellas sean cara no son muy buenas,
 incluso aunque tengamos una moneda trucada.
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> getProb flipThree  
-    [(False,1 % 40),(False,9 % 40),(False,1 % 40),(False,9 % 40),  
+    ghci> getProb flipThree
+    [(False,1 % 40),(False,9 % 40),(False,1 % 40),(False,9 % 40),
      (False,1 % 40),(False,9 % 40),(False,1 % 40),(True,9 % 40)]
 
 Las tres serán cruz nueve veces de cuarenta lanzamientos, lo cual es menos
 del 25%. Podemos ver que la mónada no sabe como unir todos los valores iguales
-a ``False``, donde no todas las tres monedas fueron cruz. No es un gran 
+a ``False``, donde no todas las tres monedas fueron cruz. No es un gran
 problema, ya que podemos crear una función que tome elemento a elemento y
 vaya sumando las probabilidades del mismo suceso. Ya tienes algo que hacer.
 

@@ -1,13 +1,9 @@
-
-
 Zippers
 =======
-
 
 .. image:: /images/60sdude.png
    :align: right
    :alt: ¡Soy parte e la élite!
-
 
 Mientras que la pureza de Haskell nos da un montón de beneficios, nos hace
 abordar algunos problemas de forma muy diferente a como lo haríamos en
@@ -31,48 +27,46 @@ este árbol, vez a la izquierda, ves a la derecha, vuelve a ir a la izquierda y
 modifica el elemento que se encuentre allí. Aunque esto funcionaría, puede ser
 ineficiente. Si luego queremos modificar un elemento que se encuentra al lado
 del elemento que acabamos de modificar, tenemos que recorrer de nuevo todo el
-camino empezando por la raíz. 
+camino empezando por la raíz.
 
 En este capítulo veremos como podemos tomar una estructura de datos cualquiera
 y centrarnos en la forma en la que modificamos y nos desplazamos por sus
 elementos de forma eficiente.
 
-
 Dando un paseo
 --------------
-
 
 Como aprendimos en clase de ciencias naturales, existen mucho tipos de árboles
 diferentes, así que vamos a elegir una semilla y plantar el nuestro. Aquí la
 tienes: ::
 
-    data Tree a = Empty | Node a (Tree a) (Tree a) deriving (Show)  
+    data Tree a = Empty | Node a (Tree a) (Tree a) deriving (Show)
 
 Así que este árbol es o bien ``Empty`` o bien es un nodo que contiene dos
 sub-árboles. Aquí tienes un ejemplo de árbol de este tipo, ¡gratis! ::
 
-    freeTree :: Tree Char  
-    freeTree =   
-        Node 'P'  
-            (Node 'O'  
-                (Node 'L'  
-                    (Node 'N' Empty Empty)  
-                    (Node 'T' Empty Empty)  
-                )  
-                (Node 'Y'  
-                    (Node 'S' Empty Empty)  
-                    (Node 'A' Empty Empty)  
-                )  
-            )  
-            (Node 'L'  
-                (Node 'W'  
-                    (Node 'C' Empty Empty)  
-                    (Node 'R' Empty Empty)  
-                )  
-                (Node 'A'  
-                    (Node 'A' Empty Empty)  
-                    (Node 'C' Empty Empty)  
-                )  
+    freeTree :: Tree Char
+    freeTree =
+        Node 'P'
+            (Node 'O'
+                (Node 'L'
+                    (Node 'N' Empty Empty)
+                    (Node 'T' Empty Empty)
+                )
+                (Node 'Y'
+                    (Node 'S' Empty Empty)
+                    (Node 'A' Empty Empty)
+                )
+            )
+            (Node 'L'
+                (Node 'W'
+                    (Node 'C' Empty Empty)
+                    (Node 'R' Empty Empty)
+                )
+                (Node 'A'
+                    (Node 'A' Empty Empty)
+                    (Node 'C' Empty Empty)
+                )
             )
 
 Y así es su representación gráfica/artística:
@@ -86,13 +80,13 @@ Bueno, una forma sería utilizando un ajuste de patrones sobre el árbol hasta
 que encontremos el elemento que buscamos, es decir, vamos por la derecha,
 luego por la izquierda y modificamos el elemento. Así sería: ::
 
-    changeToP :: Tree Char -> Tree Char  
+    changeToP :: Tree Char -> Tree Char
     changeToP (Node x l (Node y (Node _ m n) r)) = Node x l (Node y (Node 'P' m n) r)
 
 ¡Aarg! No solo es feo si no también algo confuso ¿Qué hace esto? Bueno,
 utilizamos un ajuste de patrones sobre el árbol y llamamos a su elemento raíz
 ``x`` (que en este caso será ``'P'``) y su sub-árbol izquierdo ``l``. En lugar
-de dar un nombre a su sub-árbol derecho, utilizamos otro patrón sobre él. 
+de dar un nombre a su sub-árbol derecho, utilizamos otro patrón sobre él.
 Continuamos ese ajuste de patrones hasta que alcanzamos el sub-árbol cuya
 raíz es ``'W'``. Una vez hemos llegado, reconstruimos el árbol, solo que en
 lugar de que ese sub-árbol contenga una ``'W'`` contendrá una ``'P'``.
@@ -102,30 +96,30 @@ un árbol junto a una lista de direcciones. Las direcciones será o bien ``L``
 (izquierda) o bien ``R`` (derecha), de forma que cambiamos el elemento una vez
 hemos seguido todas las direcciones. ::
 
-    data Direction = L | R deriving (Show)  
-    type Directions = [Direction]  
+    data Direction = L | R deriving (Show)
+    type Directions = [Direction]
 
-    changeToP :: Directions-> Tree Char -> Tree Char  
-    changeToP (L:ds) (Node x l r) = Node x (changeToP ds l) r  
-    changeToP (R:ds) (Node x l r) = Node x l (changeToP ds r)  
-    changeToP [] (Node _ l r) = Node 'P' l r  
-    
+    changeToP :: Directions-> Tree Char -> Tree Char
+    changeToP (L:ds) (Node x l r) = Node x (changeToP ds l) r
+    changeToP (R:ds) (Node x l r) = Node x l (changeToP ds r)
+    changeToP [] (Node _ l r) = Node 'P' l r
+
 Si el primer elemento de la lista de direcciones es ``L``, creamos un árbol
-que igual al anterior solo que su sub-árbol izquierdo ahora contendrá el 
+que igual al anterior solo que su sub-árbol izquierdo ahora contendrá el
 elemento modificado a ``P``. Cuando llamamos recursivamente a ``changeToP``,
 le pasamos únicamente la cola de la listas de direcciones, porque sino
 volvería a tomar la misma dirección. Hacemos lo mismo en caso de ``R``. Si la
 lista de direcciones está vacía, significa que hemos alcanzado nuestro
 destino, así que devolvemos un árbol idéntico al que hemos recibido, solo que
-este nuevo árbol tendrá ``'P'`` como elemento raíz. 
+este nuevo árbol tendrá ``'P'`` como elemento raíz.
 
 Para evitar tener que mostrar el árbol entero, vamos a crear una función que
 tome una lista de direcciones y nos devuelva el elemento que se encuentra en
 esa posición. ::
 
-    elemAt :: Directions -> Tree a -> a  
-    elemAt (L:ds) (Node _ l _) = elemAt ds l  
-    elemAt (R:ds) (Node _ _ r) = elemAt ds r  
+    elemAt :: Directions -> Tree a -> a
+    elemAt (L:ds) (Node _ l _) = elemAt ds l
+    elemAt (R:ds) (Node _ _ r) = elemAt ds r
     elemAt [] (Node x _ _) = x
 
 Esta función es muy parecida a ``changeToP``, solo que en lugar de reconstruir
@@ -133,10 +127,10 @@ el árbol paso a paso, ignora cualquier cosa excepto su destino. Vamos a
 cambiar ``'W'`` por ``'P'`` y luego comprobaremos si el árbol se ha modificado
 correctamente:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let newTree = changeToP [R,L] freeTree  
-    ghci> elemAt [R,L] newTree  
+    ghci> let newTree = changeToP [R,L] freeTree
+    ghci> elemAt [R,L] newTree
     'P'
 
 Genial, parece que funciona. En estas funciones, la lista de direcciones actúa
@@ -157,10 +151,8 @@ recorrer de nuevo todo el camino.
 En la siguiente sección veremos un forma mejor de señalar un sub-árbol, una
 que nos permita señalar de forma eficiente a los sub-árbol vecinos.
 
-
 Un rastro de migas
 ------------------
-
 
 .. image:: /images/bread.png
    :align: right
@@ -178,34 +170,34 @@ decir, o bien ``L`` o bien ``R``), solo que en lugar de llamarlo
 ``Directions`` (direcciones) lo llamaremos ``Breadcrumbs`` (rastro), ya que
 iremos dejando las direcciones que hemos tomado a lo largo del camino. ::
 
-    type Breadcrumbs = [Direction]  
+    type Breadcrumbs = [Direction]
 
 Aquí tienes una función que toma un árbol y un rastro y se desplaza al
 sub-árbol izquierdo añadiendo ``L`` a la cabeza de la lista que representa el
 rastro: ::
 
-    goLeft :: (Tree a, Breadcrumbs) -> (Tree a, Breadcrumbs)  
+    goLeft :: (Tree a, Breadcrumbs) -> (Tree a, Breadcrumbs)
     goLeft (Node _ l _, bs) = (l, L:bs)
 
 Ignoramos el elemento raíz y el sub-árbol derecho y simplemente devolvemos
 el sub-árbol izquierdo junto al rastro anterior añadiéndole ``L``. Aquí tienes
 la función que se desplaza a la derecha: ::
 
-    goRight :: (Tree a, Breadcrumbs) -> (Tree a, Breadcrumbs)  
+    goRight :: (Tree a, Breadcrumbs) -> (Tree a, Breadcrumbs)
     goRight (Node _ _ r, bs) = (r, R:bs)
 
 Funciona del mismo modo. Vamos a utilizar estas funciones para tomen el
 árbol ``freeTree`` y se desplacen primero a la derecha y luego a la izquierda.
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> goLeft (goRight (freeTree, []))  
+    ghci> goLeft (goRight (freeTree, []))
     (Node 'W' (Node 'C' Empty Empty) (Node 'R' Empty Empty),[L,R])
 
 .. image:: /images/almostzipper.png
    :align: left
    :alt: ¡Casi, casi! ¡Pero no!
-   
+
 Vale, ahora tenemos un árbol que tiene ``'W'`` como elemento raíz, ``'C'``
 como sub-árbol izquierdo y ``'R'`` como sub-árbol derecho. El rastro es
 ``[L,R]`` porque primero fuimos a la derecha y luego a la izquierda.
@@ -213,7 +205,7 @@ como sub-árbol izquierdo y ``'R'`` como sub-árbol derecho. El rastro es
 Para que recorrer el árbol sea más cómodo vamos crear la función ``-:`` que
 definiremos así: ::
 
-    x -: f = f x  
+    x -: f = f x
 
 La cual nos permite aplicar funciones a valores escribiendo primero el valor,
 luego ``-:`` y al final la función. Así que en lugar de hacer
@@ -221,9 +213,8 @@ luego ``-:`` y al final la función. Así que en lugar de hacer
 Usando esta función podemos reescribir el código anterior para parezca más
 que primero vamos a la derecha y luego a la izquierda: ::
 
-    ghci> (freeTree, []) -: goRight -: goLeft  
+    ghci> (freeTree, []) -: goRight -: goLeft
     (Node 'W' (Node 'C' Empty Empty) (Node 'R' Empty Empty),[L,R])
-
 
 Volviendo atrás
 '''''''''''''''
@@ -242,12 +233,12 @@ todas las posibles rutas que no hemos tomado y también conocemos el camino
 que hemos tomado, pero debe contener información acerca del sub-árbol en
 el que nos encontramos actualmente, si no, estaríamos duplicando información.
 
-Vamos a modificar el tipo rastro para que también contenga la información 
+Vamos a modificar el tipo rastro para que también contenga la información
 necesaria para almacenar todos los posibles caminos que vamos ignorando
 mientras recorremos el árbol. En lugar de utilizar ``Direction``, creamos un
 nuevo tipo de datos: ::
 
-    data Crumb a = LeftCrumb a (Tree a) | RightCrumb a (Tree a) deriving (Show)  
+    data Crumb a = LeftCrumb a (Tree a) | RightCrumb a (Tree a) deriving (Show)
 
 Ahora, en lugar de tener únicamente ``L``, tenemos ``LeftCrumb`` que contiene
 también el nodo desde el cual nos hemos desplazado y el sub-árbol derecho que
@@ -270,14 +261,14 @@ izquierdo, así que no guardamos ninguna información de este sub-árbol.
 Vamos a modificar el sinónimo de tipo ``Breadcrumbs`` para refleje este
 cambio: ::
 
-    type Breadcrumbs a = [Crumb a]  
+    type Breadcrumbs a = [Crumb a]
 
 A continuación vamos modificar las funciones ``goLeft`` y ``goRight`` para
 que almacenen en el rastro la información de los caminos que no hemos tomado,
 en lugar de ignorar esta información como hacíamos antes. Así sería
 ``goLeft``: ::
 
-    goLeft :: (Tree a, Breadcrumbs a) -> (Tree a, Breadcrumbs a)  
+    goLeft :: (Tree a, Breadcrumbs a) -> (Tree a, Breadcrumbs a)
     goLeft (Node x l r, bs) = (l, LeftCrumb x r:bs)
 
 Es muy parecida a la versión anterior de ``goLeft``, solo que en lugar de
@@ -293,7 +284,7 @@ patrones.
 
 ``goRight`` es parecido: ::
 
-    goRight :: (Tree a, Breadcrumbs a) -> (Tree a, Breadcrumbs a)  
+    goRight :: (Tree a, Breadcrumbs a) -> (Tree a, Breadcrumbs a)
     goRight (Node x l r, bs) = (r, RightCrumb x l:bs)
 
 Ahora somos totalmente capaces de movernos de izquierda a derecha. Lo que aún
@@ -301,14 +292,14 @@ no podemos hacer es volver por el camino recorrido utilizando la información
 que indica los nodos padres que hemos recorrido. Aquí tienes la función
 ``goUp``: ::
 
-    goUp :: (Tree a, Breadcrumbs a) -> (Tree a, Breadcrumbs a)  
-    goUp (t, LeftCrumb x r:bs) = (Node x t r, bs)  
+    goUp :: (Tree a, Breadcrumbs a) -> (Tree a, Breadcrumbs a)
+    goUp (t, LeftCrumb x r:bs) = (Node x t r, bs)
     goUp (t, RightCrumb x l:bs) = (Node x l t, bs)
 
 .. image:: /images/asstronaut.png
    :align: left
    :alt: Astronauta.
-   
+
 No encontramos en el árbol ``t`` y tenemos que comprobar el último ``Crumb``.
 Si es un ``LeftCrumb``, entonces reconstruimos un nuevo árbol donde ``t`` es
 el sub-árbol izquierdo y utilizamos la información del sub-árbol derecho que
@@ -330,12 +321,11 @@ seleccionada se llama *zipper*, esto es así porque se parece a la acción de
 aplicar ``zip`` sobre listas normales de duplas. Un buen sinónimo de tipo
 sería: ::
 
-    type Zipper a = (Tree a, Breadcrumbs a)  
+    type Zipper a = (Tree a, Breadcrumbs a)
 
 Preferiría llamar al sinónimo de tipos ``Focus`` ya que de esta forma es más
 claro que estamos seleccionando una parte de la estructura, pero el termino
 *zipper* se utiliza ampliamente, así que nos quedamos con ``Zipper``.
-
 
 Manipulando árboles seleccionados
 '''''''''''''''''''''''''''''''''
@@ -343,40 +333,40 @@ Manipulando árboles seleccionados
 Ahora que nos podemos mover de arriba a abajo, vamos a crear una función que
 modifique el elemento raíz del sub-árbol que seleccione un *zipper*. ::
 
-    modify :: (a -> a) -> Zipper a -> Zipper a  
-    modify f (Node x l r, bs) = (Node (f x) l r, bs)  
+    modify :: (a -> a) -> Zipper a -> Zipper a
+    modify f (Node x l r, bs) = (Node (f x) l r, bs)
     modify f (Empty, bs) = (Empty, bs)
 
 Si estamos seleccionando un nodo, modificamos su elemento raíz con la función
 ``f``. Si estamos seleccionando un árbol vacío, dejamos éste como estaba.
 Ahora podemos empezar con un árbol, movernos a donde queramos y modificar un
 elemento, todo esto mientras mantenemos seleccionado un elemento de forma que
-nos podemos desplazar fácilmente de arriba a abajo. Un ejemplo: 
+nos podemos desplazar fácilmente de arriba a abajo. Un ejemplo:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let newFocus = modify (\_ -> 'P') (goRight (goLeft (freeTree,[]))) 
-    
+    ghci> let newFocus = modify (\_ -> 'P') (goRight (goLeft (freeTree,[])))
+
 Vamos a la izquierda, luego a la derecha y luego remplazamos el elemento raíz
 del sub-árbol en el que nos encontramos por ``'P'``. Se lee mejor si
 utilizamos ``-:``:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let newFocus = (freeTree,[]) -: goLeft -: goRight -: modify (\_ -> 'P')  
+    ghci> let newFocus = (freeTree,[]) -: goLeft -: goRight -: modify (\_ -> 'P')
 
 Luego podemos desplazarnos hacía arriba y remplazar el elemento por una
 misteriosa ``'X'``:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let newFocus2 = modify (\_ -> 'X') (goUp newFocus)  
+    ghci> let newFocus2 = modify (\_ -> 'X') (goUp newFocus)
 
 O con ``-:``:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let newFocus2 = newFocus -: goUp -: modify (\_ -> 'X')  
+    ghci> let newFocus2 = newFocus -: goUp -: modify (\_ -> 'X')
 
 Movernos hacia arriba es fácil gracias a que el rastro que vamos dejando que
 contiene los caminos que no hemos tomado, así que, es como deshacer el camino.
@@ -389,7 +379,7 @@ Cada nodo posee dos sub-árboles, incluso aunque los dos sub-árboles sean
 que podemos hacer es remplazar un sub-árbol vació por un árbol que contenga
 un nodo. ::
 
-    attach :: Tree a -> Zipper a -> Zipper a  
+    attach :: Tree a -> Zipper a -> Zipper a
     attach t (_, bs) = (t, bs)
 
 Tomamos un árbol y un *zipper* y devolvemos un nuevo *zipper* que tendrá
@@ -398,9 +388,9 @@ permite añadir nodos a las hojas de un árbol, sino que también podemos
 remplazar sub-árboles enteros. Vamos a añadir un árbol a la parte inferior
 izquierda de ``freeTree``:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let farLeft = (freeTree,[]) -: goLeft -: goLeft -: goLeft -: goLeft  
+    ghci> let farLeft = (freeTree,[]) -: goLeft -: goLeft -: goLeft -: goLeft
     ghci> let newFocus = farLeft -: attach (Node 'Z' Empty Empty)
 
 ``newFocus`` ahora selecciona un nuevo árbol que ha sido añadido al árbol
@@ -408,15 +398,14 @@ original. Si utilizáramos ``goUp`` para subir por el árbol, veríamos que ser�
 igual que ``freeTree`` pero con un nodo adicional ``'Z'`` en su parte
 inferior izquierda.
 
-
 Me voy a la cima del árbol, donde el aire está limpio y fresco
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Crear una función que seleccione la cima del árbol, independientemente del
 nodo seleccionado, es realmente fácil: ::
 
-    topMost :: Zipper a -> Zipper a  
-    topMost (t,[]) = (t,[])  
+    topMost :: Zipper a -> Zipper a
+    topMost (t,[]) = (t,[])
     topMost z = topMost (goUp z)
 
 Si nuestro rastro está vacío, significa que ya estamos en la cima del árbol,
@@ -428,10 +417,8 @@ realizar unas cuantas modificaciones, y luego, gracias a ``topMost``, volver
 a selecciona la raíz principal del árbol y ver si hemos modificado
 correctamente el árbol.
 
-
 Seleccionando elementos de la listas
 ------------------------------------
-
 
 Los *zippers* se pueden utilizar con casi cualquier tipo de estructura, así
 que no debería sorprendente que también se puedan utilizar con las listas.
@@ -479,15 +466,15 @@ Como cada rastro es un elemento, no necesitamos crear un nuevo tipo de datos
 como hicimos con el tipo de datos ``Crumb`` para los árboles: ::
 
     type ListZipper a = ([a],[a])
-    
+
 La primera lista representa la lista que estamos seleccionando y la segunda
 lista es la lista de rastros. Vamos a crear las funcionen que avancen y
 retrocedan por las listas: ::
 
-    goForward :: ListZipper a -> ListZipper a  
-    goForward (x:xs, bs) = (xs, x:bs)  
+    goForward :: ListZipper a -> ListZipper a
+    goForward (x:xs, bs) = (xs, x:bs)
 
-    goBack :: ListZipper a -> ListZipper a  
+    goBack :: ListZipper a -> ListZipper a
     goBack (xs, b:bs) = (b:xs, bs)
 
 Cuando avanzamos, seleccionamos la cola de la lista actual y dejamos la cabeza
@@ -496,16 +483,16 @@ principio de la lista.
 
 Aquí tienes un ejemplo de estas funciones en acción:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let xs = [1,2,3,4]  
-    ghci> goForward (xs,[])  
-    ([2,3,4],[1])  
-    ghci> goForward ([2,3,4],[1])  
-    ([3,4],[2,1])  
-    ghci> goForward ([3,4],[2,1])  
-    ([4],[3,2,1])  
-    ghci> goBack ([4],[3,2,1])  
+    ghci> let xs = [1,2,3,4]
+    ghci> goForward (xs,[])
+    ([2,3,4],[1])
+    ghci> goForward ([2,3,4],[1])
+    ([3,4],[2,1])
+    ghci> goForward ([3,4],[2,1])
+    ([4],[3,2,1])
+    ghci> goBack ([4],[3,2,1])
     ([3,4],[2,1])
 
 Podemos observar que el rastro de una listas no es nada más que la parte
@@ -521,12 +508,11 @@ cursor. El hecho de utilizar los *zipper* también facilitaría la introducción
 de líneas de texto nuevas en cualquier parte del texto o barrar líneas
 existentes.
 
-
 Un sistema de ficheros simple
 -----------------------------
 
 Ahora que sabemos como funcionan los *zippers*, vamos utilizar un árbol para
-representar un sistema de ficheros y luego crearemos un *zipper* para ese 
+representar un sistema de ficheros y luego crearemos un *zipper* para ese
 sistema, lo cual nos permitirá movernos entre los directorios de la misma
 forma que hacemos nosotros mismos.
 
@@ -541,8 +527,8 @@ conjunto de objetos que pueden ser tanto ficheros como directorios. Aquí
 tienes el tipo de datos para este sistema junto un par de sinónimos de tipo:
 ::
 
-    type Name = String  
-    type Data = String  
+    type Name = String
+    type Data = String
     data FSItem = File Name Data | Folder Name [FSItem] deriving (Show)
 
 Cada fichero viene con dos cadenas, una representa su nombre y otra sus
@@ -552,30 +538,29 @@ vacío.
 
 Aquí tienes un ejemplo: ::
 
-    myDisk :: FSItem  
-    myDisk = 
-        Folder "root"   
-            [ File "goat_yelling_like_man.wmv" "baaaaaa"  
-            , File "pope_time.avi" "god bless"  
-            , Folder "pics"  
-                [ File "ape_throwing_up.jpg" "bleargh"  
-                , File "watermelon_smash.gif" "smash!!"  
-                , File "skull_man(scary).bmp" "Yikes!"  
-                ]  
-            , File "dijon_poupon.doc" "best mustard"  
-            , Folder "programs"  
-                [ File "fartwizard.exe" "10gotofart"  
-                , File "owl_bandit.dmg" "mov eax, h00t"  
-                , File "not_a_virus.exe" "really not a virus"  
-                , Folder "source code"  
-                    [ File "best_hs_prog.hs" "main = print (fix error)"  
-                    , File "random.hs" "main = print 4"  
-                    ]  
-                ]  
+    myDisk :: FSItem
+    myDisk =
+        Folder "root"
+            [ File "goat_yelling_like_man.wmv" "baaaaaa"
+            , File "pope_time.avi" "god bless"
+            , Folder "pics"
+                [ File "ape_throwing_up.jpg" "bleargh"
+                , File "watermelon_smash.gif" "smash!!"
+                , File "skull_man(scary).bmp" "Yikes!"
+                ]
+            , File "dijon_poupon.doc" "best mustard"
+            , Folder "programs"
+                [ File "fartwizard.exe" "10gotofart"
+                , File "owl_bandit.dmg" "mov eax, h00t"
+                , File "not_a_virus.exe" "really not a virus"
+                , Folder "source code"
+                    [ File "best_hs_prog.hs" "main = print (fix error)"
+                    , File "random.hs" "main = print 4"
+                    ]
+                ]
             ]
 
-En verdad es el contenido de mi disco duro en este momento. 
-
+En verdad es el contenido de mi disco duro en este momento.
 
 Un *zipper* para el sistema de ficheros
 '''''''''''''''''''''''''''''''''''''''
@@ -600,7 +585,7 @@ no podemos avanzar en el sistema de ficheros, así que no tiene mucho sentido
 dejar algo en el rastro que diga que venimos de un fichero. Un fichero es
 algo parecido a un árbol vacío.
 
-Si nos encontramos en el directorio ``"root"`` y queremos seleccionar el 
+Si nos encontramos en el directorio ``"root"`` y queremos seleccionar el
 fichero ``"dijon_poupon.doc"``, ¿qué debería contener el rastro? Bueno,
 debería contener el nombre del directorio padre junto con todos los elementos
 anteriores al fichero que estamos seleccionando más los elementos posteriores.
@@ -611,17 +596,17 @@ atrás.
 
 Aquí tenemos el tipo rastro para nuestro sistema de ficheros: ::
 
-    data FSCrumb = FSCrumb Name [FSItem] [FSItem] deriving (Show)  
+    data FSCrumb = FSCrumb Name [FSItem] [FSItem] deriving (Show)
 
 Y aquí nuestro sinónimo de tipo para *zipper*: ::
 
-    type FSZipper = (FSItem, [FSCrumb])  
+    type FSZipper = (FSItem, [FSCrumb])
 
 Volver atrás por esta jerarquía es muy fácil. Solo tenemos que tomar el último
 elemento del rastro y seleccionar un nuevo elemento a partir del objeto
 actualmente seleccionado y del rastro. Así: ::
 
-    fsUp :: FSZipper -> FSZipper  
+    fsUp :: FSZipper -> FSZipper
     fsUp (item, (FSCrumb name ls rs):bs) = (Folder name (ls ++ [item] ++ rs), bs)
 
 Como el rastro contiene el nombre del directorio padre, así como los elementos
@@ -636,15 +621,15 @@ que van después.
 Aquí tienes una función que, dado un nombre, selecciona el fichero o
 directorio que este contenido en el directorio actual: ::
 
-    import Data.List (break)  
+    import Data.List (break)
 
-    fsTo :: Name -> FSZipper -> FSZipper  
-    fsTo name (Folder folderName items, bs) =   
-        let (ls, item:rs) = break (nameIs name) items  
-        in  (item, FSCrumb folderName ls rs:bs)  
+    fsTo :: Name -> FSZipper -> FSZipper
+    fsTo name (Folder folderName items, bs) =
+        let (ls, item:rs) = break (nameIs name) items
+        in  (item, FSCrumb folderName ls rs:bs)
 
-    nameIs :: Name -> FSItem -> Bool  
-    nameIs name (Folder folderName _) = name == folderName  
+    nameIs :: Name -> FSItem -> Bool
+    nameIs name (Folder folderName _) = name == folderName
     nameIs name (File fileName _) = name == fileName
 
 ``fsTo`` toma un ``Name`` y un ``FSZipper`` y devuelve un nuevo ``FSZipper``
@@ -655,7 +640,7 @@ directorios, solo con el directorio actual.
 .. image:: /images/cool.png
    :align: left
    :alt: Cool.
-   
+
 Primero utilizamos ``break`` par dividir la lista de elementos en un lista
 con los elementos anteriores al fichero que estamos buscando y en una lista
 con los que van después. Si recuerdas, ``break`` toma un predicado y una lista
@@ -673,14 +658,14 @@ que devolver el objeto que obtuvimos de ``break`` y crear un rastro con toda
 la información requerida.
 
 Fíjate que si el nombre que estamos buscando no está en el directorio actual,
-el patrón ``item:rs`` no se ajustará y por lo tanto obtendremos un error. 
+el patrón ``item:rs`` no se ajustará y por lo tanto obtendremos un error.
 También, si el elemento seleccionado no es directorio, es decir, es un
 fichero, también obtendremos un error y el programa terminará.
 
 Ahora ya podemos movernos por el sistema de ficheros. Vamos a partir de la
 raíz y recorrer el sistema hasta el fichero ``"skull_man(scary).bmp"``:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let newFocus = (myDisk,[]) -: fsTo "pics" -: fsTo "skull_man(scary).bmp"
 
@@ -688,19 +673,18 @@ raíz y recorrer el sistema hasta el fichero ``"skull_man(scary).bmp"``:
 ``"skull_man(scary).bmp"``. Vamos a obtener el primer componente del *zipper*
 (el objeto seleccionado) y comprobar si es verdad:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> fst newFocus  
+    ghci> fst newFocus
     File "skull_man(scary).bmp" "Yikes!"
 
 Vamos a volver atrás y seleccionar su fichero vecino "watermelon_smash.gif":
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let newFocus2 = newFocus -: fsUp -: fsTo "watermelon_smash.gif"  
-    ghci> fst newFocus2  
+    ghci> let newFocus2 = newFocus -: fsUp -: fsTo "watermelon_smash.gif"
+    ghci> fst newFocus2
     File "watermelon_smash.gif" "smash!!"
-
 
 Manipulando el sistema de ficheros
 ''''''''''''''''''''''''''''''''''
@@ -709,13 +693,13 @@ Ahora que ya podemos navegar por el sistema de ficheros, manipular los
 elementos es muy fácil. Aquí tienes un función que renombra el fichero o
 directorio actual: ::
 
-    fsRename :: Name -> FSZipper -> FSZipper  
-    fsRename newName (Folder name items, bs) = (Folder newName items, bs)  
+    fsRename :: Name -> FSZipper -> FSZipper
+    fsRename newName (Folder name items, bs) = (Folder newName items, bs)
     fsRename newName (File name dat, bs) = (File newName dat, bs)
 
 Podemos renombrar el directorio ``"pics"`` a ``"cspi"``:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let newFocus = (myDisk,[]) -: fsTo "pics" -: fsRename "cspi" -: fsUp
 
@@ -724,19 +708,19 @@ hemos vuelto.
 
 ¿Qué tal una función que crea un nuevo elemento en el directorio actual? ::
 
-    fsNewFile :: FSItem -> FSZipper -> FSZipper  
-    fsNewFile item (Folder folderName items, bs) =   
+    fsNewFile :: FSItem -> FSZipper -> FSZipper
+    fsNewFile item (Folder folderName items, bs) =
         (Folder folderName (item:items), bs)
-    
+
 Facilísimo. Ten en cuenta que esta función fallara si intentamos añadir un
 elemento a algo que no sea un directorio.
 
 Vamos a añadir un fichero a nuestro directorio ``"pics"`` y luego volver
 atrás:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let newFocus = (myDisk,[]) -: fsTo "pics" -: fsNewFile (File "heh.jpg" "lol") -: fsUp  
+    ghci> let newFocus = (myDisk,[]) -: fsTo "pics" -: fsNewFile (File "heh.jpg" "lol") -: fsUp
 
 Lo realmente interesante de este método es que cuando modificamos el sistema
 de ficheros, en realidad no modifica ese mismo sistema, si no que devuelve uno
@@ -749,7 +733,6 @@ versiones antiguas aunque lo hayamos modificado. Esto no es una propiedad
 que son inmutables. Sin embargo con los *zippers*, ganamos la habilidad de
 recorrer y almacenar eficientemente estas estructuras de datos.
 
-
 Vigila tus pasos
 ----------------
 
@@ -759,13 +742,13 @@ un paso en falso y nos salíamos de la estructura. Por ejemplo, la función
 ``goLeft`` toma un *zipper* de un árbol binario y mueve el selector al árbol
 izquierdo: ::
 
-    goLeft :: Zipper a -> Zipper a  
+    goLeft :: Zipper a -> Zipper a
     goLeft (Node x l r, bs) = (l, LeftCrumb x r:bs)
 
 .. image:: /images/bigtree.png
    :align: right
    :alt: Cayéndote de un árbol. Última imágen :'(
-   
+
 Pero, ¿y si el árbol en el que nos encontramos está vacío? Es decir, no es un
 ``Node`` si no un ``Empty``. En este caso, obtendremos un error de ejecución
 ya que el ajuste de patrones fallará ya que no hay ningún patrón que se ajuste
@@ -790,38 +773,38 @@ Primero, vamos a añadir el contexto de un posible fallo a ``goLeft`` y
 ``goRight``. Hasta ahora, el fallo de una función se reflejaba en su
 resultado y no va ser distinto aquí. ::
 
-    goLeft :: Zipper a -> Maybe (Zipper a)  
-    goLeft (Node x l r, bs) = Just (l, LeftCrumb x r:bs)  
-    goLeft (Empty, _) = Nothing  
+    goLeft :: Zipper a -> Maybe (Zipper a)
+    goLeft (Node x l r, bs) = Just (l, LeftCrumb x r:bs)
+    goLeft (Empty, _) = Nothing
 
-    goRight :: Zipper a -> Maybe (Zipper a)  
-    goRight (Node x l r, bs) = Just (r, RightCrumb x l:bs)  
+    goRight :: Zipper a -> Maybe (Zipper a)
+    goRight (Node x l r, bs) = Just (r, RightCrumb x l:bs)
     goRight (Empty, _) = Nothing
 
 ¡Genial! Ahora si intentamos dar un paso a la izquierda por un árbol vacío
 obtendremos un ``Nothing``.
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> goLeft (Empty, [])  
-    Nothing  
-    ghci> goLeft (Node 'A' Empty Empty, [])  
+    ghci> goLeft (Empty, [])
+    Nothing
+    ghci> goLeft (Node 'A' Empty Empty, [])
     Just (Empty,[LeftCrumb 'A' Empty])
 
-Parece que funciona ¿Y si vamos hacia arriba? Aquí el problema está en 
+Parece que funciona ¿Y si vamos hacia arriba? Aquí el problema está en
 si queremos ir hacía arriba y no hay ningún rastro más, ya que esta situación
 indica que nos encontramos en la cima del árbol. Esta es la función ``goUp``
 que lanza un error si nos salimos de los límites: ::
 
-    goUp :: Zipper a -> Zipper a  
-    goUp (t, LeftCrumb x r:bs) = (Node x t r, bs)  
+    goUp :: Zipper a -> Zipper a
+    goUp (t, LeftCrumb x r:bs) = (Node x t r, bs)
     goUp (t, RightCrumb x l:bs) = (Node x l t, bs)
 
 Y esta la versión modificada: ::
 
-    goUp :: Zipper a -> Maybe (Zipper a)  
-    goUp (t, LeftCrumb x r:bs) = Just (Node x t r, bs)  
-    goUp (t, RightCrumb x l:bs) = Just (Node x l t, bs)  
+    goUp :: Zipper a -> Maybe (Zipper a)
+    goUp (t, LeftCrumb x r:bs) = Just (Node x t r, bs)
+    goUp (t, RightCrumb x l:bs) = Just (Node x l t, bs)
     goUp (_, []) = Nothing
 
 Si tenemos un rastro no hay ningún problema y podemos devolver un nuevo
@@ -830,9 +813,9 @@ nodo seleccionado. Si embargo, si no hay ningún rastro devolvemos un fallo.
 Antes estas funciones tomaban *zippers* y devolvían *zippers*, por lo tanto
 podíamos encadenarlas así:
 
-.. code-block:: console
+.. code-block:: none
 
-    gchi> let newFocus = (freeTree,[]) -: goLeft -: goRight 
+    gchi> let newFocus = (freeTree,[]) -: goLeft -: goRight
 
 Ahora, en lugar de devolver un ``Zipper a``, devuelven ``Maybe (Zipper a)``,
 así que no podemos encadenar las funciones de este modo. Tuvimos un problema
@@ -850,14 +833,14 @@ representa el contexto de un posible fallo) y se lo pasa a un función de forma
 que se mantenga el significado del contexto. Así que al igual que nuestro
 amigo, solo tenemos que intercambiar ``-:`` por ``>>=``. Mira:
 
-.. code-block:: console
+.. code-block:: none
 
-    ghci> let coolTree = Node 1 Empty (Node 3 Empty Empty)  
-    ghci> return (coolTree,[]) >>= goRight  
-    Just (Node 3 Empty Empty,[RightCrumb 1 Empty])  
-    ghci> return (coolTree,[]) >>= goRight >>= goRight  
-    Just (Empty,[RightCrumb 3 Empty,RightCrumb 1 Empty])  
-    ghci> return (coolTree,[]) >>= goRight >>= goRight >>= goRight  
+    ghci> let coolTree = Node 1 Empty (Node 3 Empty Empty)
+    ghci> return (coolTree,[]) >>= goRight
+    Just (Node 3 Empty Empty,[RightCrumb 1 Empty])
+    ghci> return (coolTree,[]) >>= goRight >>= goRight
+    Just (Empty,[RightCrumb 3 Empty,RightCrumb 1 Empty])
+    ghci> return (coolTree,[]) >>= goRight >>= goRight >>= goRight
     Nothing
 
 Hemos utilizado ``return`` para introducir un *zipper* en un valor ``Just``
@@ -876,4 +859,4 @@ salvará si nos caemos. Momento metafórico.
 El sistema de fichero también posee un montón de casos donde podría fallar,
 como intentar seleccionar un fichero o un directorio que no existe. Como
 último ejercicio, si quieres claro, puedes intentar añadir a estas funciones
-el contexto de un posibles fallos utilizando la mónada ``Maybe``. 
+el contexto de un posibles fallos utilizando la mónada ``Maybe``.

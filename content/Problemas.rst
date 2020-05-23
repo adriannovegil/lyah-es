@@ -1,4 +1,3 @@
-
 Resolviendo problemas de forma funcional
 ========================================
 
@@ -9,14 +8,10 @@ un poco. Cada sección presentará un problema diferente. Primero describiremos
 el problema, luego intentaremos resolverlo y trataremos de encontrar la mejor
 (o al menos no la peor) forma de resolverlo.
 
-
 .. _rpn:
-
-
 
 Notación polaca inversa
 -----------------------
-
 
 Normalmente cuando escribíamos expresiones matemáticas en la escuela lo
 hacíamos de forma infija. Por ejemplo, ``10 - (4 + 3) * 2``. ``+``, ``*`` y
@@ -24,7 +19,6 @@ hacíamos de forma infija. Por ejemplo, ``10 - (4 + 3) * 2``. ``+``, ``*`` y
 de Haskell (``+``, `elem`, etc.). Resulta bastante útil, ya que nosotros, como
 humanos, podemos analizar fácilmente estas expresiones. La pega es que tenemos
 que utilizar paréntesis para especificar la precedencia.
-
 
 La `Notación polaca inversa <http://es.wikipedia.org/wiki/Notaci%C3%B3n_polaca_inversa>`_
 es otra forma de escribir expresiones matemáticas. Al principio parece un poco
@@ -76,7 +70,7 @@ tipo sea algo como ``solveRPN :: (Num a) => String -> a``.
 .. image:: /images/calculator.png
    :align: left
    :alt: ¡Ja ja ja!
-   
+
 Bien. Cuando implementemos la solución de un problema en Haskell, a veces es
 bueno volver a ver como lo solucionamos a mano para ver si podemos sacar algo
 que nos ayude. En este caso vimos que tratábamos cada número u operador que
@@ -102,7 +96,7 @@ pila? Propongo que utilicemos una lista. También propongo que mantengamos en
 la cabeza de la lista la cima de la pila. De esta forma añadir un elemento en
 la cabeza de la lista es mucho más eficiente que añadirlo al final. Así que si
 tenemos una pila como, ``10, 4, 3``, la representaremos con una lista como
-``[3,4,10]``. 
+``[3,4,10]``.
 
 Ahora tenemos suficiente información para bosquejar vagamente nuestra función.
 Tomará una cadena como ``"10 4 3 + 2 * -"`` y la romperá en una lista de
@@ -114,10 +108,10 @@ final.
 
 Aquí tienes el esqueleto de esta función: ::
 
-    import Data.List  
+    import Data.List
 
-    solveRPN :: (Num a) => String -> a  
-    solveRPN expression = head (foldl foldingFunction [] (words expression))  
+    solveRPN :: (Num a) => String -> a
+    solveRPN expression = head (foldl foldingFunction [] (words expression))
         where   foldingFunction stack item = ...
 
 Tomamos una expresión y la convertimos en una lista de elementos. Luego
@@ -134,10 +128,10 @@ tenemos que devolver ``[40]``. Pero antes, vamos a transformar nuestra función
 al :ref:`estilo libre de puntos <estilolibrepuntos>` ya que tiene muchos
 paréntesis y me está dando grima. ::
 
-    import Data.List  
+    import Data.List
 
-    solveRPN :: (Num a) => String -> a  
-    solveRPN = head . foldl foldingFunction [] . words  
+    solveRPN :: (Num a) => String -> a
+    solveRPN = head . foldl foldingFunction [] . words
         where   foldingFunction stack item = ...
 
 Ahí lo tienes. Mucho mejor. Como vemos, la función de pliegue tomará una pila
@@ -145,13 +139,13 @@ y un elemento y devolverá una nueva pila. Utilizaremos ajuste de patrones para
 obtener los elementos de la cima de la pila y para obtener los operadores,
 como ``"*"`` o ``"-"``. ::
 
-    solveRPN :: (Num a, Read a) => String -> a  
-    solveRPN = head . foldl foldingFunction [] . words  
-        where   foldingFunction (x:y:ys) "*" = (x * y):ys  
-                foldingFunction (x:y:ys) "+" = (x + y):ys  
-                foldingFunction (x:y:ys) "-" = (y - x):ys  
+    solveRPN :: (Num a, Read a) => String -> a
+    solveRPN = head . foldl foldingFunction [] . words
+        where   foldingFunction (x:y:ys) "*" = (x * y):ys
+                foldingFunction (x:y:ys) "+" = (x + y):ys
+                foldingFunction (x:y:ys) "-" = (y - x):ys
                 foldingFunction xs numberString = read numberString:xs
-                
+
 Hemos utilizado cuatro patrones. Los patrones se ajustarán de arriba a abajo.
 Primero, la función de pliegue verá si el elemento actual es ``"*"``. Si lo
 es, tomará una lista como podría ser ``[3,4,9,3]`` y llamará a sus dos
@@ -163,7 +157,7 @@ de nuevo en la pila. Si el elemento no es ``"*"``, el ajuste de patrones
 fallará y continuará con ``"+"``, y así sucesivamente.
 
 Si el elemento no es ninguno de los operadores, asumimos que es una cadena que
-representa un número. Simplemente llamamos a ``read`` sobre esa esa cadena 
+representa un número. Simplemente llamamos a ``read`` sobre esa esa cadena
 para obtener el número y devolver la misma pila pero con este número en la
 cima.
 
@@ -186,19 +180,19 @@ La pila final es ``[5]``, que contiene el número que devolveremos.
 
 Vamos a jugar con esta función: ::
 
-    ghci> solveRPN "10 4 3 + 2 * -"  
-    -4  
-    ghci> solveRPN "2 3 +"  
-    5  
-    ghci> solveRPN "90 34 12 33 55 66 + * - +"  
-    -3947  
-    ghci> solveRPN "90 34 12 33 55 66 + * - + -"  
-    4037  
-    ghci> solveRPN "90 34 12 33 55 66 + * - + -"  
-    4037  
-    ghci> solveRPN "90 3 -"  
+    ghci> solveRPN "10 4 3 + 2 * -"
+    -4
+    ghci> solveRPN "2 3 +"
+    5
+    ghci> solveRPN "90 34 12 33 55 66 + * - +"
+    -3947
+    ghci> solveRPN "90 34 12 33 55 66 + * - + -"
+    4037
+    ghci> solveRPN "90 34 12 33 55 66 + * - + -"
+    4037
+    ghci> solveRPN "90 3 -"
     87
-    
+
 ¡Genial, funciona! Un detalle de esta función es que se puede modificar
 fácilmente para que soporte nuevos operadores. No tienen porque ser operadores
 binarios. Por ejemplo, podemos crear el operador ``"log"`` que solo retira un
@@ -211,19 +205,19 @@ Vamos a modificar nuestra función para que acepte unos cuantos operadores más.
 Para simplificar, vamos a cambiar la declaración de tipo de forma que devuelva
 un número del tipo ``Float``. ::
 
-    import Data.List  
+    import Data.List
 
-    solveRPN :: String -> Float  
-    solveRPN = head . foldl foldingFunction [] . words  
-        where   foldingFunction (x:y:ys) "*" = (x * y):ys  
-                foldingFunction (x:y:ys) "+" = (x + y):ys  
-                foldingFunction (x:y:ys) "-" = (y - x):ys  
-                foldingFunction (x:y:ys) "/" = (y / x):ys  
-                foldingFunction (x:y:ys) "^" = (y ** x):ys  
-                foldingFunction (x:xs) "ln" = log x:xs  
-                foldingFunction xs "sum" = [sum xs]  
+    solveRPN :: String -> Float
+    solveRPN = head . foldl foldingFunction [] . words
+        where   foldingFunction (x:y:ys) "*" = (x * y):ys
+                foldingFunction (x:y:ys) "+" = (x + y):ys
+                foldingFunction (x:y:ys) "-" = (y - x):ys
+                foldingFunction (x:y:ys) "/" = (y / x):ys
+                foldingFunction (x:y:ys) "^" = (y ** x):ys
+                foldingFunction (x:xs) "ln" = log x:xs
+                foldingFunction xs "sum" = [sum xs]
                 foldingFunction xs numberString = read numberString:xs
-                
+
 ¡Perfecto! ''/'' es la división y ``**`` la potencia de número en coma
 flotante. Con el operador logarítmico, usamos el ajuste de
 patrones para obtener un solo elemento y el resto de la lista, ya que solo
@@ -231,21 +225,21 @@ necesitamos un elemento para obtener su logaritmo neperiano. Con el operador
 ``sum``, devolvemos una pila con un solo elemento, el cual es la suma de toda
 la pila. ::
 
-    ghci> solveRPN "2.7 ln"  
-    0.9932518  
-    ghci> solveRPN "10 10 10 10 sum 4 /"  
-    10.0  
-    ghci> solveRPN "10 10 10 10 10 sum 4 /"  
-    12.5  
-    ghci> solveRPN "10 2 ^"  
+    ghci> solveRPN "2.7 ln"
+    0.9932518
+    ghci> solveRPN "10 10 10 10 sum 4 /"
+    10.0
+    ghci> solveRPN "10 10 10 10 10 sum 4 /"
+    12.5
+    ghci> solveRPN "10 2 ^"
     100.0
-    
+
 Fíjate que podemos incluir números en coma flotante en nuestra expresión
 porque ``read`` sabe como leerlos. ::
 
-    ghci> solveRPN "43.2425 0.5 ^"  
+    ghci> solveRPN "43.2425 0.5 ^"
     6.575903
-    
+
 En mi opinión, crear una función que calcule expresiones arbitrarias RPN en
 coma flotante y tenga la opción de ser fácilmente extensible en solo 10 líneas
 es bastante impresionante.
@@ -259,7 +253,6 @@ mismo, pero sería un poco pesado ya que requeriría un montón de comprobacione
 para ``Nothing`` en cada paso. Si crees que puede ser un reto, puedes
 continuar e intentarla crearla tu mismo. Un consejo: puedes utilizar ``reads``
 para ver si una lectura a sido correcta o no.
-
 
 De Heathrow a Londres
 ---------------------
@@ -290,17 +283,17 @@ entrada para este caso.
 
 .. code-block:: none
 
-    50  
-    10  
-    30  
-    5  
-    90  
-    20  
-    40  
-    2  
-    25  
-    10  
-    8  
+    50
+    10
+    30
+    5
+    90
+    20
+    40
+    2
+    25
+    10
+    8
     0
 
 Para analizar mentalmente el fichero de entrada, separa los números en grupos
@@ -317,7 +310,7 @@ problema lo resolveremos en tres pasos:
  * Piensa como vamos a representar la información en Haskell.
  * Encuentra un modo de operar sobre esta información en Haskell que produzca
    una solución.
-   
+
 En el problema de la calculadora, primero nos dimos cuenta de que cuando
 calculábamos una expresión a mano, manteníamos una especie de pile en nuestra
 cabeza y recorríamos la expresión elemento a elemento. Decidimos utilizar una
@@ -370,7 +363,7 @@ cruzar.
           cruzar de B1 a A1 cuando buscábamos la mejor forma de llegar hasta
           A1, así que no tenemos que tomar en cuenta esta posibilidad en el
           siguiente paso.
-          
+
 Ahora que tenemos la mejor ruta para llegar hasta A2 y B2, podemos repetir
 este proceso indefinidamente hasta que alcancemos el final. Una vez tengamos
 las mejores rutas para llegar a A4 y B4, la mejor será la ruta óptima.
@@ -406,7 +399,7 @@ camino, veríamos que cada nodo se conecta con el nodo del otro lado y con el
 nodo siguiente del mismo lado. Exceptuando los nodos finales, que únicamente
 se conectan con el nodo del otro lado. ::
 
-    data Node = Node Road Road | EndNode Road  
+    data Node = Node Road Road | EndNode Road
     data Road = Road Int Node
 
 Un nodo es o bien un nodo normal que contiene información acerca del camino
@@ -423,9 +416,9 @@ caminos que llevan al siguiente nodo. Cada nodo tendría un camino que llevara
 a otro punto de la vía opuesta, pero solo los nodos que no están al final
 tendrían un camino que les llevará adelante. ::
 
-    data Node = Node Road (Maybe Road)  
+    data Node = Node Road (Maybe Road)
     data Road = Road Int Node
-    
+
 Ambas son buenas formas de representar el sistema de caminos en Haskell y en
 realidad podríamos resolver el problema usándolas, pero, quizá podemos
 encontrar algo más simple. Si pensamos de nuevo en la forma de resolverlo a
@@ -441,9 +434,9 @@ secciones: ``50, 10, 30``, ``5, 90, 20``, ``40, 2, 25`` y ``10, 8, 0``.
 Siempre es bueno mantener nuestros tipos de datos tan simple como sea posible,
 pero ¡No más simple! ::
 
-    data Section = Section { getA :: Int, getB :: Int, getC :: Int } deriving (Show)  
+    data Section = Section { getA :: Int, getB :: Int, getC :: Int } deriving (Show)
     type RoadSystem = [Section]
-    
+
 ¡Es casi perfecto! Es simple y tengo la sensación de que va a funcionar
 perfectamente para la implementación de nuestra solución. ``Section`` es un
 tipo de dato algebraico simple que contiene tres enteros para los tiempos de
@@ -455,19 +448,19 @@ que dice que ``RoadSystem`` es una lista de secciones.
           tuplas en lugar de tipos de datos algebraicos propios para cosas
           pequeñas y puntuales, pero normalmente es mejor crear nuevos tipos
           para cosas como esta. De esta forma el sistema de tipos tiene más
-          infomación acerca de que es cada cosa. Podemos utilizar 
+          infomación acerca de que es cada cosa. Podemos utilizar
           ``(Int, Int, Int)`` para representar una sección de un camino o para
           representar un vector en un espacio tridimensional y podemos
           trabajar con ambos a la vez, pero de este modo podríamos acabar
           mezclandolos entre sí. Si utilizamos los tipos ``Section`` y
           ``Vector``, no podremos, ni si quiera accidentalmente, sumar un
           vector a una sección.
-          
+
 Ahora el sistema de caminos de Heathrow a Londres se puede representar así: ::
 
-    heathrowToLondon :: RoadSystem  
-    heathrowToLondon = [Section 50 10 30, Section 5 90 20, Section 40 2 25, Section 10 8 0]  
-    
+    heathrowToLondon :: RoadSystem
+    heathrowToLondon = [Section 50 10 30, Section 5 90 20, Section 40 2 25, Section 10 8 0]
+
 Todo lo que nos queda por hacer es implementar la solución a la que llegamos
 con Haskell ¿Cual sería la declaración de tipo de una función que calcule el
 camino más corto para cualquier sistema de caminos? Tendría que tomar un
@@ -476,15 +469,15 @@ lista también. Crearemos el tipo ``Label`` que será una simple enumeración
 cuyos valores serán ``A``, ``B`` o ``C``. También crearemos un sinónimo de
 tipo: ``Path``. ::
 
-    data Label = A | B | C deriving (Show)  
+    data Label = A | B | C deriving (Show)
     type Path = [(Label, Int)]
-    
+
 Llamaremos a nuestra función ``optimalPath`` y tendrá una declaración de tipo
 como ``optimalPath :: RoadSystem -> Path``. Si es llamada con el sistema
 ``heathrowToLondon`` deberá devolver una ruta como: ::
 
-    [(B,10),(C,30),(A,5),(C,20),(B,2),(B,8)]  
-    
+    [(B,10),(C,30),(A,5),(C,20),(B,2),(B,8)]
+
 Vamos a tener que recorrer la lista de secciones de izquierda a derecha y
 mantener un camino óptimo hasta A y un camino óptimo hasta B conforme vayamos
 avanzando. Acumularemos la mejor ruta conforme vayamos avanzando, de izquierda
@@ -505,23 +498,23 @@ implementar esta función que parece que será útil.
 .. note:: Será util porque ``(Path, Path) -> Section -> (Path, Path)`` puede
           ser utilizado como una función binaría para un pliegue por la
           derecha, el cual tiene un tipo ``a -> b -> a``.
-          
+
 ::
 
-    roadStep :: (Path, Path) -> Section -> (Path, Path)  
-    roadStep (pathA, pathB) (Section a b c) =   
-        let priceA = sum $ map snd pathA  
-            priceB = sum $ map snd pathB  
-            forwardPriceToA = priceA + a  
-            crossPriceToA = priceB + b + c  
-            forwardPriceToB = priceB + b  
-            crossPriceToB = priceA + a + c  
-            newPathToA = if forwardPriceToA <= crossPriceToA  
-                            then (A,a):pathA  
-                            else (C,c):(B,b):pathB  
-            newPathToB = if forwardPriceToB <= crossPriceToB  
-                            then (B,b):pathB  
-                            else (C,c):(A,a):pathA  
+    roadStep :: (Path, Path) -> Section -> (Path, Path)
+    roadStep (pathA, pathB) (Section a b c) =
+        let priceA = sum $ map snd pathA
+            priceB = sum $ map snd pathB
+            forwardPriceToA = priceA + a
+            crossPriceToA = priceB + b + c
+            forwardPriceToB = priceB + b
+            crossPriceToB = priceA + a + c
+            newPathToA = if forwardPriceToA <= crossPriceToA
+                            then (A,a):pathA
+                            else (C,c):(B,b):pathB
+            newPathToB = if forwardPriceToB <= crossPriceToB
+                            then (B,b):pathB
+                            else (C,c):(A,a):pathA
         in  (newPathToA, newPathToB)
 
 .. image:: /images/guycar.png
@@ -530,7 +523,7 @@ implementar esta función que parece que será útil.
 
 ¿Qué hace esto? Primero, calculamos el coste óptimo en la vía A basandonos
 en el camino óptimo hasta el momento en A, y luego hacemos lo mismo para B.
-Hacemos ``sum $ map snd pathA``, así que si ``pathA`` es algo como 
+Hacemos ``sum $ map snd pathA``, así que si ``pathA`` es algo como
 ``[(A,100),(C,20)]``, ``priceA`` será ``120``. ``forwardPriceToA`` es el coste
 de que tendría continuar hasta el siguiente cruce si fuéramos directamente
 desde el cruce anterior en A. Es igual al coste anterior de A, más el coste
@@ -563,9 +556,9 @@ Vamos a ejecutar esta función con la primera sección de ``heathrowToLondon``.
 Como es la primera sección, las mejores rutas hasta A y B serán un par de
 listas vacías. ::
 
-    ghci> roadStep ([], []) (head heathrowToLondon)  
+    ghci> roadStep ([], []) (head heathrowToLondon)
     ([(C,30),(B,10)],[(B,10)])
-    
+
 Recuerda que las rutas están invertidas, así que léelas de derecha a
 izquierda. Podemos ver que la mejor ruta hasta el siguiente cruce en A es
 empezando por B y luego cruzar hasta A y que la mejor ruta hasta B es
@@ -576,7 +569,7 @@ simplemente continuando adelante a partir de B.
           implementamos ``roadStep`` como una función
           ``(Path, Path, Int, Int) -> Section -> (Path, Path, Int, Int)``
           donde los enteros representan el coste de A y B.
-          
+
 Ahora que tenemos una función que toma un par de rutas y una sección y produce
 una nueva ruta óptima, podemos hacer fácilmente un pliegue por la izquierda
 de la lista de secciones. ``roadStep`` se llamará con ``([],[])`` y la primera
@@ -586,11 +579,11 @@ sucesivamente. Cuando hayamos recorrido todas las secciones, tendremos una
 dupla con las rutas óptimas, y la mas corta será nuestra respuesta. Tendiendo
 esto en cuenta, podemos implementar ``optimalPath``. ::
 
-    optimalPath :: RoadSystem -> Path  
-    optimalPath roadSystem = 
-        let (bestAPath, bestBPath) = foldl roadStep ([],[]) roadSystem  
-        in  if sum (map snd bestAPath) <= sum (map snd bestBPath)  
-                then reverse bestAPath  
+    optimalPath :: RoadSystem -> Path
+    optimalPath roadSystem =
+        let (bestAPath, bestBPath) = foldl roadStep ([],[]) roadSystem
+        in  if sum (map snd bestAPath) <= sum (map snd bestBPath)
+                then reverse bestAPath
                 else reverse bestBPath
 
 Plegamos ``roadSystem`` por la izquierda (recuerda, es una lista de secciones)
@@ -603,7 +596,7 @@ listas.
 
 ¡Vamos a probarla! ::
 
-    ghci> optimalPath heathrowToLondon  
+    ghci> optimalPath heathrowToLondon
     [(B,10),(C,30),(A,5),(C,20),(B,2),(B,8),(C,0)]
 
 ¡Este es el resultado que se supone que debíamos obtener! ¡Genial! Se
@@ -622,9 +615,9 @@ grupos del mismo tamaño. La llamaremos ``groupsOf``. Con un parámetro como
 ``[1..10]``, ``groupsOf 3`` deberá devolver
 ``[[1,2,3],[4,5,6],[7,8,9],[10]]``. ::
 
-    groupsOf :: Int -> [a] -> [[a]]  
-    groupsOf 0 _ = undefined  
-    groupsOf _ [] = []  
+    groupsOf :: Int -> [a] -> [[a]]
+    groupsOf 0 _ = undefined
+    groupsOf _ [] = []
     groupsOf n xs = take n xs : groupsOf n (drop n xs)
 
 Una función recursiva estándar. Para un ``xs`` de ``[1..10]`` y un ``n`` de
@@ -633,18 +626,18 @@ recursión termina, obtenemos una lista de grupos de tres elementos. Y aquí
 esta la función ``main``, la cual leer desde la entrada estándar, crea
 un ``RoadSystem`` y muestra la ruta más corta: ::
 
-    import Data.List  
+    import Data.List
 
-    main = do  
-        contents <- getContents  
-        let threes = groupsOf 3 (map read $ lines contents)  
-            roadSystem = map (\[a,b,c] -> Section a b c) threes  
-            path = optimalPath roadSystem  
-            pathString = concat $ map (show . fst) path  
-            pathPrice = sum $ map snd path  
-        putStrLn $ "The best path to take is: " ++ pathString  
+    main = do
+        contents <- getContents
+        let threes = groupsOf 3 (map read $ lines contents)
+            roadSystem = map (\[a,b,c] -> Section a b c) threes
+            path = optimalPath roadSystem
+            pathString = concat $ map (show . fst) path
+            pathPrice = sum $ map snd path
+        putStrLn $ "The best path to take is: " ++ pathString
         putStrLn $ "The price is: " ++ show pathPrice
-        
+
 Primero, obtenemos todos los contenidos de la entrada estándar. Luego llamamos
 a ``lines`` con los contenidos para convertir algo como ``"50\n10\n30\n...``
 en ``["50","10","30"...`` y luego mapeamos ``read`` sobre ella para obtener
@@ -660,36 +653,29 @@ Guardamos el siguiente texto:
 
 .. code-block:: none
 
-    50  
-    10  
-    30  
-    5  
-    90  
-    20  
-    40  
-    2  
-    25  
-    10  
-    8  
+    50
+    10
+    30
+    5
+    90
+    20
+    40
+    2
+    25
+    10
+    8
     0
 
 En un fichero llamado ``paths.txt`` y luego se lo pasamos a nuestro programa.
 
-.. code-block:: console
+.. code-block:: none
 
-    $ cat paths.txt | runhaskell heathrow.hs  
-    The best path to take is: BCACBBC  
+    $ cat paths.txt | runhaskell heathrow.hs
+    The best path to take is: BCACBBC
     The price is: 75
-    
+
 ¡Funciona perfecto! Puedes usar tu conocimiento del módulo ``Data.Random``
 para generar un sistema de caminos mucho más grande, que luego podrás pasar a
 nuestro programa de la misma forma que hemos hecho. Si obtienes errores de
 desbordamiento de pila, intenta usar ``foldl'`` en lugar ``foldl``, ya que
 ``foldl'`` es estricto.
-
-    
-
-
-
-
-

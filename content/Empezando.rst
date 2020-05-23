@@ -15,7 +15,7 @@ vamos a trabajar. Lo primero que vamos a hacer es ejecutar GHC en modo
 interactivo y utilizar algunas funciones para ir acostumbrándonos un poco.
 Abre una terminal y escribe ``ghci``. Serás recibido con un saludo como éste:
 
-.. code-block:: console
+.. code-block:: none
 
     GHCi, version 7.2.1: http://www.haskell.org/ghc/  :? for help
     Loading package ghc-prim ... linking ... done.
@@ -31,7 +31,7 @@ ejecuta ``:set prompt "ghci> "``.
 
 Aquí tenemos algo de aritmética simple.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> 2 + 15
     17
@@ -47,7 +47,7 @@ Se explica por si solo. También podemos utilizar varias operaciones en una
 misma línea de forma que se sigan todas las reglas de precedencia que todos
 conocemos. Podemos usar paréntesis para utilizar una precedencia explícita.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> (50 * 100) - 4999
     1
@@ -65,7 +65,7 @@ La álgebra booleana es también bastante simple. Como seguramente sabrás,
 ``&&`` representa el **Y** lógico mientras que ``||`` representa el **O**
 lógico. ``not`` niega ``True`` a ``False`` y viceversa.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> True && False
     False
@@ -80,7 +80,7 @@ lógico. ``not`` niega ``True`` a ``False`` y viceversa.
 
 La comprobación de igualdad se hace así:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> 5 == 5
     True
@@ -96,7 +96,7 @@ La comprobación de igualdad se hace así:
 ¿Qué pasa si hacemos algo como ``5 + "texto"`` o ``5 == True``? Bueno, si
 probamos con el primero obtenemos este amigable mensaje de error:
 
-.. code-block:: console
+.. code-block:: none
 
     No instance for (Num [Char])
     arising from a use of `+' at <interactive>:1:0-9
@@ -135,7 +135,7 @@ comas. En Haskell, las funciones son llamadas escribiendo su nombre, un
 espacio y sus parámetros, separados por espacios. Para empezar, vamos a
 intentar llamar a una de las funciones más aburridas de Haskell.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> succ 8
     9
@@ -147,7 +147,7 @@ parámetros es igual de sencillo. Las funciones ``min`` y ``max`` toman dos
 cosas que puedan ponerse en orden (¡cómo los números!) y devuelven uno de
 ellos.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> min 9 10
     9
@@ -160,7 +160,7 @@ La aplicación de funciones (llamar a una función poniendo un espacio después
 de ella y luego escribir sus parámetros) tiene la máxima prioridad. Dicho con
 un ejemplo, estas dos sentencias son equivalentes:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> succ 9 + max 5 4 + 1
     16
@@ -191,7 +191,6 @@ Significa que primero llamamos a la función ``bar`` con ``3`` como parámetro
 para obtener un número y luego volver a llamar ``bar`` otra vez con ese
 número. En C, esto sería algo como ``bar(bar(3))``.
 
-
 Las primeras pequeñas funciones
 -------------------------------
 
@@ -209,7 +208,7 @@ donde lo guardaste y ejecuta ``ghci`` desde ahí. Una vez dentro de GHCi,
 escribe ``:l baby``. Ahora que nuestro código está cargado, podemos jugar con
 la función que hemos definido.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> :l baby
     [1 of 1] Compiling Main             ( baby.hs, interpreted )
@@ -232,7 +231,7 @@ Simple. La podríamos haber definido también como
 predecibles (recuerda añadir esta función en el fichero ``baby.hs``, guardarlo
 y luego ejecutar ``:l baby`` dentro de GHCi).
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> doubleUs 4 9
     26
@@ -332,7 +331,7 @@ unos cuantos enteros y otros cuantos caracteres. Y ahora, ¡una lista!
     Hacer ``let a = 1`` dentro de GHCi es equivalente ha escribir ``a = 1`` en
     un fichero y luego cargarlo.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let lostNumbers = [4,8,15,16,23,42]
     ghci> lostNumbers
@@ -350,7 +349,7 @@ funciones que operan con listas sobre ellas, lo cual es realmente útil.
 Una tarea común es concatenar dos listas. Cosa que conseguimos con el operador
 ``++``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [1,2,3,4] ++ [9,10,11,12]
     [1,2,3,4,9,10,11,12]
@@ -369,7 +368,7 @@ final de una lista que tiene cincuenta millones de elementos llevará un rato.
 Sin embargo, concatenar algo al principio de una lista utilizando el operador
 ``:`` (también llamado operador cons) es instantáneo.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> 'U':"n gato negro"
     "Un gato negro"
@@ -381,7 +380,7 @@ de caracteres, mientras que ``++`` toma dos listas. Incluso si añades un
 elemento al final de las lista con ``++``, hay que rodearlo con corchetes para
 que se convierte en una lista de un solo elemento.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [1,2] ++ 3
     <interactive>:1:10:
@@ -406,7 +405,7 @@ a esto obtenemos ``[2,3]``.
 Si queremos obtener un elemento de la lista sabiendo su índice, utilizamos
 ``!!``. Los índices empiezan por 0.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> "Steve Buscemi" !! 6
     'B'
@@ -419,7 +418,7 @@ elementos, obtendremos un error, así que hay que ir con cuidado.
 Las listas también pueden contener listas. Estas también pueden contener a su
 vez listas que contengan listas, que contengan listas...
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let b = [[1,2,3,4],[5,3,3,3],[1,2,2,3,4],[1,2,3]]
     ghci> b
@@ -447,7 +446,7 @@ que pueden operar con las listas.
  * :cpp:member:`head` toma una lista y devuelve su cabeza. La cabeza de una
    lista es básicamente el primer elemento.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> head [5,4,3,2,1]
        5
@@ -455,14 +454,14 @@ que pueden operar con las listas.
  * :cpp:member:`tail` toma una lista y devuelve su cola. En otros palabras,
    corta la cabeza de la lista.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> tail [5,4,3,2,1]
        [4,3,2,1]
 
  * :cpp:member:`last` toma una lista y devuelve su último elemento.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> last [5,4,3,2,1]
        1
@@ -470,7 +469,7 @@ que pueden operar con las listas.
  * :cpp:member:`init` toma una lista y devuelve toda la lista excepto su
    último elemento.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> init [5,4,3,2,1]
        [5,4,3,2]
@@ -483,7 +482,7 @@ Si imaginamos las listas como monstruos, serian algo como:
 
 ¿Pero que pasa si intentamos obtener la cabeza de una lista vacía?
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> head []
     *** Exception: Prelude.head: empty list
@@ -496,7 +495,7 @@ decir a Haskell que te devuelva algunos elementos de una lista vacía.
 
  * :cpp:member:`length` toma una lista y obviamente devuelve su tamaño.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> length [5,4,3,2,1]
        5
@@ -505,7 +504,7 @@ decir a Haskell que te devuelva algunos elementos de una lista vacía.
    ``True``, en caso contrario devuelve ``False``. Usa esta función en lugar
    de ``xs == []`` (si tienes una lista que se llame xs).
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> null [1,2,3]
        False
@@ -514,7 +513,7 @@ decir a Haskell que te devuelva algunos elementos de una lista vacía.
 
  * :cpp:member:`reverse` pone del revés una lista.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> reverse [5,4,3,2,1]
        [1,2,3,4,5]
@@ -522,7 +521,7 @@ decir a Haskell que te devuelva algunos elementos de una lista vacía.
  * :cpp:member:`take` toma un número y una lista y extrae dicho número de
    elementos de una lista. Observa.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> take 3 [5,4,3,2,1]
        [5,4,3]
@@ -540,7 +539,7 @@ decir a Haskell que te devuelva algunos elementos de una lista vacía.
  * :cpp:member:`drop` funciona de forma similar, solo que quita un número de
    elementos del comienzo de la lista.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> drop 3 [8,4,2,1,5,6]
        [1,5,6]
@@ -554,7 +553,7 @@ decir a Haskell que te devuelva algunos elementos de una lista vacía.
 
  * :cpp:member:`minimum` devuelve el más pequeño.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> minimum [8,4,2,1,5,6]
        1
@@ -565,7 +564,7 @@ decir a Haskell que te devuelva algunos elementos de una lista vacía.
 
  * :cpp:member:`product` toma una lista de números y devuelve su producto.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> sum [5,2,1,6,3,2,5,7]
        31
@@ -578,7 +577,7 @@ decir a Haskell que te devuelva algunos elementos de una lista vacía.
    cosa es un elemento de la lista. Normalmente, esta función es llamada de
    forma infija porque resulta más fácil de leer.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> 4 `elem` [3,4,5,6]
        True
@@ -611,7 +610,7 @@ el 20 simplemente escribimos ``[1..20]``. Es equivalente a escribir
 diferencia entre escribir uno u otro salvo que escribir manualmente una
 larga secuencia de enumerables es bastante estúpido.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [1..20]
     [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
@@ -624,7 +623,7 @@ También podemos especificar el número de pasos entre elementos de un rango ¿Y
 si queremos todos los números pares desde el 1 hasta el 20? ¿o cada tercer
 número?
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [2,4..20]
     [2,4,6,8,10,12,14,16,18,20]
@@ -646,7 +645,7 @@ usar ``[20..1]``, debemos utilizar ``[20,19..1]``.
 son del todo precisos (por definición), y su uso con los rangos puede dar
 algunos resultados no esperados.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [0.1, 0.3 .. 1]
     [0.1,0.3,0.5,0.7,0.8999999999999999,1.0999999999999999]
@@ -668,7 +667,7 @@ Ahora, un par de funciones que generan listas infinitas:
    infinito. Si intentáramos mostrar el resultado nunca terminaría así que
    hay que cortarlo en alguna parte.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> take 10 (cycle [1,2,3])
        [1,2,3,1,2,3,1,2,3,1]
@@ -679,7 +678,7 @@ Ahora, un par de funciones que generan listas infinitas:
    contiene ese único elemento repetido. Es como hacer un ciclo de una lista
    con un solo elemento.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> take 10 (repeat 5)
        [5,5,5,5,5,5,5,5,5,5]
@@ -718,7 +717,7 @@ deberíamos usar sería ``[x*2 | x <- [1..10]]``. ``x`` es extraído de
 ``[1..10]`` y para cada elemento de ``[1..10]`` (que hemos ligado a ``x``)
 calculamos su doble. Su resultado es:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [x*2 | x <- [1..10]]
     [2,4,6,8,10,12,14,16,18,20]
@@ -728,7 +727,7 @@ condición (o un predicado) a esta lista intensional. Los predicados van
 después de la parte donde enlazamos las variables, separado por una coma.
 Digamos que solo queremos los elementos que su doble sea mayor o igual a doce:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [x*2 | x <- [1..10], x*2 >= 12]
     [12,14,16,18,20]
@@ -736,7 +735,7 @@ Digamos que solo queremos los elementos que su doble sea mayor o igual a doce:
 Bien, funciona. ¿Y si quisiéramos todos los números del 50 al 100 cuyo resto
 al dividir por 7 fuera 3? Fácil:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [ x | x <- [50..100], x `mod` 7 == 3]
     [52,59,66,73,80,87,94]
@@ -755,7 +754,7 @@ La última parte de la comprensión es el predicado. La función ``odd`` devuelv
 ``True`` si le pasamos un número impar y ``False`` con uno par. El elemento es
 incluido en la lista solo si todos los predicados se evalúan a ``True``.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> boomBangs [7..13]
     ["BOOM!","BOOM!","BANG!","BANG!"]
@@ -763,7 +762,7 @@ incluido en la lista solo si todos los predicados se evalúan a ``True``.
 Podemos incluir varios predicados. Si quisiéramos todos los elementos del 10
 al 20 que no fueran 13, 15 ni 19, haríamos:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [x | x <- [10..20], x /= 13, x /= 15, x /= 19]
     [10,11,12,14,16,17,18,20]
@@ -778,7 +777,7 @@ lista intensional que extrae elementos de dos listas cuyas longitudes son de
 tenemos dos listas, ``[2,5,10]`` y ``[8,10,11]`` y queremos que el producto de
 todas las combinaciones posibles entre ambas, podemos usar algo como:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [ x*y | x <- [2,5,10], y <- [8,10,11]]
     [16,20,22,40,50,55,80,100,110]
@@ -786,7 +785,7 @@ todas las combinaciones posibles entre ambas, podemos usar algo como:
 Como era de esperar, la longitud de la nueva lista es de 9 ¿Y si quisiéramos
 todos los posibles productos cuyo valor sea mayor que 50?
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> [ x*y | x <- [2,5,10], y <- [8,10,11], x*y > 50]
     [55,80,100,110]
@@ -794,7 +793,7 @@ todos los posibles productos cuyo valor sea mayor que 50?
 ¿Qué tal una lista intensional que combine una lista de adjetivos con una
 lista de nombres? Solo para quedarnos tranquilos...
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let noums = ["rana","zebra","cabra"]
     ghci> let adjetives = ["perezosa","enfadada","intrigante"]
@@ -823,7 +822,7 @@ tal que así: ::
 
 Unas pruebas rápidas:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> removeNonUppercase "Jajaja! Ajajaja!"
     "JA"
@@ -836,7 +835,7 @@ listas intensionales anidadas si estamos trabajando con listas que contienen
 listas. Por ejemplo, dada una lista de listas de números, vamos eliminar los
 números impares sin aplanar la lista:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let xxs = [[1,3,5,2,3,1,2,4,5],[1,2,3,4,5,6,7,8,9],[1,2,4,2,1,6,3,1,3,2,3,6]]
     ghci> [ [ x | x <- xs, even x ] | xs <- xxs]
@@ -845,7 +844,6 @@ números impares sin aplanar la lista:
 Podemos escribir las listas intensionales en varias líneas. Si no estamos
 usando GHCi es mejor dividir las listas intensionales en varias líneas,
 especialmente si están anidadas.
-
 
 Tuplas
 ------
@@ -881,7 +879,7 @@ rodeando los vectores utilizamos paréntesis: ``[(1,2),(8,11),(4,5)]``. ¿Qué
 pasaría si intentamos crear una forma como ``[(1,2),(8,11,5),(4,5)]``? Bueno,
 obtendríamos este error:
 
-.. code-block:: console
+.. code-block:: none
 
     Couldn't match expected type `(t, t1)'
     against inferred type `(t2, t3, t4)'
@@ -918,7 +916,7 @@ funciones útiles para operar con duplas son:
 
  * :cpp:member:`fst` toma una dupla y devuelve su primer componente.
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> fst (8,11)
        8
@@ -928,7 +926,7 @@ funciones útiles para operar con duplas son:
  * :cpp:member:`snd` toma una dupla y devuelve su segundo componente.
    ¡Sorpresa!
 
-   .. code-block:: console
+   .. code-block:: none
 
        ghci> snd (8,11)
        11
@@ -948,13 +946,12 @@ montones de usos. Es especialmente útil cuando queremos combinar dos listas de
 alguna forma o recorrer dos listas simultáneamente. Aquí tienes una
 demostración:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> zip [1,2,3,4,5] [5,5,5,5,5]
     [(1,5),(2,5),(3,5),(4,5),(5,5)]
     ghci> zip [1 .. 5] ["uno","dos","tres","cuatro","cinco"]
     [(1,"uno"),(2,"dos"),(3,"tres"),(4,"cuatro"),(5,"cinco")]
-
 
 Como vemos, se emparejan los elementos produciendo una nueva lista. El primer
 elemento va el primero, el segundo el segundo, etc. Ten en cuenta que como las
@@ -962,7 +959,7 @@ duplas pueden tener diferentes tipos, ``zip`` puede tomar dos listas que
 contengan diferentes tipos y combinarlas. ¿Qué pasa si el tamaño de las listas
 no coincide?
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> zip [5,3,2,6,2,7,2,5,4,6,6] ["soy","una","tortuga"]
     [(5,"soy"),(3,"una"),(2,"tortuga")]
@@ -971,7 +968,7 @@ Simplemente se recorta la lista más larga para que coincida con el tamaño de
 la más corta. Como Haskell es perezoso, podemos usar ``zip`` usando listas
 finitas e infinitas:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> zip [1..] ["manzana", "naranja", "cereza", "mango"]
     [(1,"manzana"),(2,"naranja"),(3,"cereza"),(4,"mango")]
@@ -985,7 +982,7 @@ triángulo recto cuyos lados miden enteros menores que 10 tienen un perímetro
 igual a 24? Primero, vamos a intentar generar todos los triángulos con lados
 iguales o menores que 10:
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let triangles = [ (a,b,c) | c <- [1..10], b <- [1..10], a <- [1..10] ]
 
@@ -997,14 +994,14 @@ que nos filtre únicamente los triángulos rectos. Vamos a modificar esta
 función teniendo en consideración que el lado b no es mas largo que la
 hipotenusa y que el lado a no es más largo que el lado b.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let rightTriangles = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
 
 Ya casi hemos acabado. Ahora, simplemente modificaremos la función diciendo
 que solo queremos aquellos que su perímetro es 24.
 
-.. code-block:: console
+.. code-block:: none
 
     ghci> let rightTriangles' = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2, a+b+c == 24]
     ghci> rightTriangles'
