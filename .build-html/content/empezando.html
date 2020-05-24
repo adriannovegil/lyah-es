@@ -1,0 +1,939 @@
+
+<!DOCTYPE html>
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Empezando &#8212; documentación de ¡Aprende Haskell por el bien de todos! - 0.1</title>
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/translations.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="search" title="Búsqueda" href="../search.html" />
+    <link rel="next" title="Tipos y clases de tipos" href="tipos.html" />
+    <link rel="prev" title="Introducción" href="introduccion.html" />
+    <script type="text/javascript" src="../_static/cms.js"></script> 
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="tipos.html" title="Tipos y clases de tipos"
+             accesskey="N">siguiente</a></li>
+        <li class="right" >
+          <a href="introduccion.html" title="Introducción"
+             accesskey="P">anterior</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../chapters.html">Índice</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="empezando">
+<h1>Empezando<a class="headerlink" href="#empezando" title="Enlazar permanentemente con este título">¶</a></h1>
+<div class="section" id="preparados-listos-ya">
+<h2>¡Preparados, listos, ya!<a class="headerlink" href="#preparados-listos-ya" title="Enlazar permanentemente con este título">¶</a></h2>
+<img alt="Empezando" class="align-right" src="../_images/startingout.png" />
+<p>Muy bien ¡Vamos a empezar! Si eres esa clase de mala persona que no lee las
+introducciones y te la has saltado, quizás debas leer la última sección de la
+introducción porque explica lo que necesitas para seguir esta guía y como
+vamos a trabajar. Lo primero que vamos a hacer es ejecutar GHC en modo
+interactivo y utilizar algunas funciones para ir acostumbrándonos un poco.
+Abre una terminal y escribe <code class="docutils literal notranslate"><span class="pre">ghci</span></code>. Serás recibido con un saludo como éste:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>GHCi, version 7.2.1: http://www.haskell.org/ghc/  :? for help
+Loading package ghc-prim ... linking ... done.
+Loading package integer-gmp ... linking ... done.
+Loading package base ... linking ... done.
+Loading package ffi-1.0 ... linking ... done.
+Prelude&gt;
+</pre></div>
+</div>
+<p>¡Enhorabuena, entraste de GHCi! Aquí el apuntador (o <em>prompt</em>) es <code class="docutils literal notranslate"><span class="pre">Prelude&gt;</span></code>
+pero como éste se hace más largo a medida que cargamos módulos durante una
+sesión, vamos a utilizar <code class="docutils literal notranslate"><span class="pre">ghci&gt;</span></code>. Si quieres tener el mismo apuntador
+ejecuta <code class="docutils literal notranslate"><span class="pre">:set</span> <span class="pre">prompt</span> <span class="pre">&quot;ghci&gt;</span> <span class="pre">&quot;</span></code>.</p>
+<p>Aquí tenemos algo de aritmética simple.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; 2 + 15
+17
+ghci&gt; 49 * 100
+4900
+ghci&gt; 1892 - 1472
+420
+ghci&gt; 5 / 2
+2.5
+ghci&gt;
+</pre></div>
+</div>
+<p>Se explica por si solo. También podemos utilizar varias operaciones en una
+misma línea de forma que se sigan todas las reglas de precedencia que todos
+conocemos. Podemos usar paréntesis para utilizar una precedencia explícita.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; (50 * 100) - 4999
+1
+ghci&gt; 50 * 100 - 4999
+1
+ghci&gt; 50 * (100 - 4999)
+-244950
+</pre></div>
+</div>
+<p>¿Muy interesante, eh? Sí, se que no, pero ten paciencia. Una pequeña
+dificultad a tener en cuenta ocurre cuando negamos números, siempre será mejor
+rodear los números negativos con paréntesis. Hacer algo como <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">-3</span></code> hará
+que GHCi se enfade, sin embargo <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">(-3)</span></code> funcionará.</p>
+<p>La álgebra booleana es también bastante simple. Como seguramente sabrás,
+<code class="docutils literal notranslate"><span class="pre">&amp;&amp;</span></code> representa el <strong>Y</strong> lógico mientras que <code class="docutils literal notranslate"><span class="pre">||</span></code> representa el <strong>O</strong>
+lógico. <code class="docutils literal notranslate"><span class="pre">not</span></code> niega <code class="docutils literal notranslate"><span class="pre">True</span></code> a <code class="docutils literal notranslate"><span class="pre">False</span></code> y viceversa.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; True &amp;&amp; False
+False
+ghci&gt; True &amp;&amp; True
+True
+ghci&gt; False || True
+True
+ghci&gt; not False
+True
+ghci&gt; not (True &amp;&amp; True)
+False
+</pre></div>
+</div>
+<p>La comprobación de igualdad se hace así:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; 5 == 5
+True
+ghci&gt; 1 == 0
+False
+ghci&gt; 5 /= 5
+False
+ghci&gt; 5 /= 4
+True
+ghci&gt; &quot;hola&quot; == &quot;hola&quot;
+True
+</pre></div>
+</div>
+<p>¿Qué pasa si hacemos algo como <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">+</span> <span class="pre">&quot;texto&quot;</span></code> o <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">==</span> <span class="pre">True</span></code>? Bueno, si
+probamos con el primero obtenemos este amigable mensaje de error:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>No instance for (Num [Char])
+arising from a use of `+&#39; at &lt;interactive&gt;:1:0-9
+Possible fix: add an instance declaration for (Num [Char])
+In the expression: 5 + &quot;texto&quot;
+In the definition of `it&#39;: it = 5 + &quot;texto&quot;
+</pre></div>
+</div>
+<p>GHCi nos está diciendo es que <code class="docutils literal notranslate"><span class="pre">&quot;texto&quot;</span></code> no es un número y por lo tanto no
+sabe como sumarlo a 5. Incluso si en lugar de <code class="docutils literal notranslate"><span class="pre">&quot;texto&quot;</span></code> fuera <code class="docutils literal notranslate"><span class="pre">&quot;cuatro&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;four&quot;</span></code>, o <code class="docutils literal notranslate"><span class="pre">&quot;4&quot;</span></code>, Haskell no lo consideraría como un número. <code class="docutils literal notranslate"><span class="pre">+</span></code> espera
+que su parte izquierda y derecha sean números. Si intentamos realizar <code class="docutils literal notranslate"><span class="pre">True</span>
+<span class="pre">==</span> <span class="pre">5</span></code>, GHCi nos diría que los tipos no coinciden. Mientras que <code class="docutils literal notranslate"><span class="pre">+</span></code> funciona
+solo con cosas que son consideradas números, <code class="docutils literal notranslate"><span class="pre">==</span></code> funciona con cualquiera
+cosa que pueda ser comparada. El truco está en que ambas deben ser comparables
+entre si. No podemos comparar la velocidad con el tocino. Daremos un vistazo
+más detallado sobre los tipos más adelante. Nota: podemos hacer <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">+</span> <span class="pre">4.0</span></code>
+porque <code class="docutils literal notranslate"><span class="pre">5</span></code> no posee un tipo concreto y puede actuar como un entero o como un
+número en coma flotante. <code class="docutils literal notranslate"><span class="pre">4.0</span></code> no puede actuar como un entero, así que <code class="docutils literal notranslate"><span class="pre">5</span></code>
+es el único que se puede adaptar.</p>
+<p>Puede que no lo sepas, pero hemos estado usando funciones durante todo este
+tiempo. Por ejemplo, <code class="docutils literal notranslate"><span class="pre">*</span></code> es una función que toma dos números y los
+multiplica. Como ya has visto, lo llamamos haciendo un sándwich sobre él. Esto
+lo llamamos funciones infijas. Muchas funciones que no son usadas con números
+son prefijas. Vamos a ver alguna de ellas.</p>
+<img alt="¡Ring Ring!" class="align-right" src="../_images/ringring.png" />
+<p>Las funciones normalmente son prefijas así que de ahora en adelante no vamos
+a decir que una función está en forma prefija, simplemente lo asumiremos. En
+muchos lenguajes imperativos las funciones son llamadas escribiendo su nombre
+y luego escribiendo sus parámetros entre paréntesis, normalmente separados por
+comas. En Haskell, las funciones son llamadas escribiendo su nombre, un
+espacio y sus parámetros, separados por espacios. Para empezar, vamos a
+intentar llamar a una de las funciones más aburridas de Haskell.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; succ 8
+9
+</pre></div>
+</div>
+<p>La función <code class="docutils literal notranslate"><span class="pre">succ</span></code> toma cualquier cosa que tenga definido un sucesor y
+devuelve ese sucesor. Como puedes ver, simplemente hemos separado el nombre de
+la función y su parámetro por un espacio. Llamar a una función con varios
+parámetros es igual de sencillo. Las funciones <code class="docutils literal notranslate"><span class="pre">min</span></code> y <code class="docutils literal notranslate"><span class="pre">max</span></code> toman dos
+cosas que puedan ponerse en orden (¡cómo los números!) y devuelven uno de
+ellos.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; min 9 10
+9
+ghci&gt; min 3.4 3.2
+3.2
+ghci&gt; max 100 101
+101
+</pre></div>
+</div>
+<p>La aplicación de funciones (llamar a una función poniendo un espacio después
+de ella y luego escribir sus parámetros) tiene la máxima prioridad. Dicho con
+un ejemplo, estas dos sentencias son equivalentes:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; succ 9 + max 5 4 + 1
+16
+ghci&gt; (succ 9) + (max 5 4) + 1
+16
+</pre></div>
+</div>
+<p>Sin embargo, si hubiésemos querido obtener el sucesor del producto de los
+números 9 y 10, no podríamos haber escrito <code class="docutils literal notranslate"><span class="pre">succ</span> <span class="pre">9</span> <span class="pre">*</span> <span class="pre">10</span></code> porque hubiésemos
+obtenido el sucesor de 9, el cual hubiese sido multiplicado por 10,
+obteniendo 100. Tenemos que escribir <code class="docutils literal notranslate"><span class="pre">succ</span> <span class="pre">(9</span> <span class="pre">*</span> <span class="pre">10)</span></code> para obtener 91.</p>
+<p>Si una función toma dos parámetros también podemos llamarla como una función
+infija rodeándola con acentos abiertos. Por ejemplo, la función <code class="docutils literal notranslate"><span class="pre">div</span></code> toma
+dos enteros y realiza una división entera entre ellos. Haciendo <code class="docutils literal notranslate"><span class="pre">div</span> <span class="pre">92</span> <span class="pre">10</span></code>
+obtendríamos 9. Pero cuando la llamamos así, puede haber alguna confusión como
+que número está haciendo la división y cual está siendo dividido. De manera
+que nosotros la llamamos como una función infija haciendo <code class="docutils literal notranslate"><span class="pre">92</span> <span class="pre">`div`</span> <span class="pre">10</span></code>,
+quedando de esta forma más claro.</p>
+<p>La gente que ya conoce algún lenguaje imperativo tiende a aferrarse a la idea
+de que los paréntesis indican una aplicación de funciones. Por ejemplo, en C,
+usas los paréntesis para llamar a las funciones como <code class="docutils literal notranslate"><span class="pre">foo()</span></code>, <code class="docutils literal notranslate"><span class="pre">bar(1)</span></code>, o
+<code class="docutils literal notranslate"><span class="pre">baz(3,</span> <span class="pre">&quot;jaja&quot;)</span></code>. Como hemos dicho, los espacios son usados para la
+aplicación de funciones en Haskell. Así que estas funciones en Haskell serían
+<code class="docutils literal notranslate"><span class="pre">foo</span></code>, <code class="docutils literal notranslate"><span class="pre">bar</span> <span class="pre">1</span></code> y <code class="docutils literal notranslate"><span class="pre">baz</span> <span class="pre">3</span> <span class="pre">&quot;jaja&quot;</span></code>. Si ves algo como <code class="docutils literal notranslate"><span class="pre">bar</span> <span class="pre">(bar</span> <span class="pre">3)</span></code> no
+significa que <code class="docutils literal notranslate"><span class="pre">bar</span></code> es llamado con <code class="docutils literal notranslate"><span class="pre">bar</span></code> y <code class="docutils literal notranslate"><span class="pre">3</span></code> como parámetros.
+Significa que primero llamamos a la función <code class="docutils literal notranslate"><span class="pre">bar</span></code> con <code class="docutils literal notranslate"><span class="pre">3</span></code> como parámetro
+para obtener un número y luego volver a llamar <code class="docutils literal notranslate"><span class="pre">bar</span></code> otra vez con ese
+número. En C, esto sería algo como <code class="docutils literal notranslate"><span class="pre">bar(bar(3))</span></code>.</p>
+</div>
+<div class="section" id="las-primeras-pequenas-funciones">
+<h2>Las primeras pequeñas funciones<a class="headerlink" href="#las-primeras-pequenas-funciones" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En la sección anterior obtuvimos una idea básica de como llamar a las
+funciones ¡Ahora vamos a intentar hacer las nuestras! Abre tu editor de textos
+favorito y pega esta función que toma un número y lo multiplica por dos.</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">doubleMe</span> <span class="n">x</span> <span class="ow">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">x</span>
+</pre></div>
+</div>
+<p>Las funciones son definidas de forma similar a como son llamadas. El nombre de
+la función es seguido por los parámetros separados por espacios. Pero, cuando
+estamos definiendo funciones, hay un <code class="docutils literal notranslate"><span class="pre">=</span></code> y luego definimos lo que hace la
+función. Guarda esto como <code class="docutils literal notranslate"><span class="pre">baby.hs</span></code> o como tú quieras. Ahora navega hasta
+donde lo guardaste y ejecuta <code class="docutils literal notranslate"><span class="pre">ghci</span></code> desde ahí. Una vez dentro de GHCi,
+escribe <code class="docutils literal notranslate"><span class="pre">:l</span> <span class="pre">baby</span></code>. Ahora que nuestro código está cargado, podemos jugar con
+la función que hemos definido.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; :l baby
+[1 of 1] Compiling Main             ( baby.hs, interpreted )
+Ok, modules loaded: Main.
+ghci&gt; doubleMe 9
+18
+ghci&gt; doubleMe 8.3
+16.6
+</pre></div>
+</div>
+<p>Como <code class="docutils literal notranslate"><span class="pre">+</span></code> funciona con los enteros igual de bien que con los número en coma
+flotante (en realidad con cualquier cosa que pueda ser considerada un número),
+nuestra función también funciona con cualquier número. Vamos a hacer una
+función que tome dos números, multiplique por dos cada uno de ellos y luego
+sume ambos.</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">doubleUs</span> <span class="n">x</span> <span class="n">y</span> <span class="ow">=</span> <span class="n">x</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>Simple. La podríamos haber definido también como
+<code class="docutils literal notranslate"><span class="pre">doubleUs</span> <span class="pre">x</span> <span class="pre">y</span> <span class="pre">=</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span> <span class="pre">+</span> <span class="pre">y</span></code>. Ambas formas producen resultados muy
+predecibles (recuerda añadir esta función en el fichero <code class="docutils literal notranslate"><span class="pre">baby.hs</span></code>, guardarlo
+y luego ejecutar <code class="docutils literal notranslate"><span class="pre">:l</span> <span class="pre">baby</span></code> dentro de GHCi).</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; doubleUs 4 9
+26
+ghci&gt; doubleUs 2.3 34.2
+73.0
+ghci&gt; doubleUs 28 88 + doubleMe 123
+478
+</pre></div>
+</div>
+<p>Como podrás deducir, puedes llamar tus propias funciones dentro de las
+funciones que hagas. Teniendo esto en cuenta, podríamos redefinir <code class="docutils literal notranslate"><span class="pre">doubleUs</span></code>
+como:</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">doubleUs</span> <span class="n">x</span> <span class="n">y</span> <span class="ow">=</span> <span class="n">doubleMe</span> <span class="n">x</span> <span class="o">+</span> <span class="n">doubleMe</span> <span class="n">y</span>
+</pre></div>
+</div>
+<p>Esto es un simple ejemplo de un patrón normal que verás por todo Haskell.
+Crear funciones pequeñas que son obviamente correctas y luego combinarlas en
+funciones más complejas. De esta forma también evitarás repetirte. ¿Qué pasa
+si algunos matemáticos descubren que 2 es en realidad 3 y tienes que cambiar
+tu programa? Puedes simplemente redefinir <code class="docutils literal notranslate"><span class="pre">doubleMe</span></code> para que sea
+<code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">x</span></code> y como <code class="docutils literal notranslate"><span class="pre">doubleUs</span></code> llama a <code class="docutils literal notranslate"><span class="pre">doubleMe</span></code> automáticamente
+funcionara en este extraño mundo en el que 2 es 3.</p>
+<p>Las funciones en Haskell no tienen que estar en ningún orden en particular,
+así que no importa si defines antes <code class="docutils literal notranslate"><span class="pre">doubleMe</span></code> y luego <code class="docutils literal notranslate"><span class="pre">doubleUs</span></code> o si lo
+haces al revés.</p>
+<p>Ahora vamos a crear una función que multiplique un número por 2 pero solo si
+ese número es menor o igual que 100, porque los número mayores 100 ya son
+suficientemente grandes por si solos.</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">doubleSmallNumber</span> <span class="n">x</span> <span class="ow">=</span> <span class="kr">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">100</span>
+                        <span class="kr">then</span> <span class="n">x</span>
+                        <span class="kr">else</span> <span class="n">x</span><span class="o">*</span><span class="mi">2</span>
+</pre></div>
+</div>
+<img alt="Bebe" class="align-left" src="../_images/baby.png" />
+<p>Acabamos de introducir la sentencia <code class="docutils literal notranslate"><span class="pre">if</span></code> de Haskell. Probablemente ya estés
+familiarizado con la sentencia <code class="docutils literal notranslate"><span class="pre">if</span></code> de otros lenguajes. La diferencia entre
+la sentencia <code class="docutils literal notranslate"><span class="pre">if</span></code> de Haskell y la de los lenguajes imperativos es que la
+parte <code class="docutils literal notranslate"><span class="pre">else</span></code> es obligatoria. En los lenguajes imperativos podemos saltarnos
+unos cuantos pasos si una condición no se ha satisfecho pero en Haskell cada
+expresión o función debe devolver un valor. También podríamos haber definido
+la sentencia <code class="docutils literal notranslate"><span class="pre">if</span></code> en una sola línea pero así parece un poco mas legible.
+Otro asunto acerca de la sentencia <code class="docutils literal notranslate"><span class="pre">if</span></code> en Haskell es que es una expresión.
+Básicamente una expresión es un trozo de código que devuelve un valor. <code class="docutils literal notranslate"><span class="pre">5</span></code>
+es una expresión porque devuelve 5, <code class="docutils literal notranslate"><span class="pre">4</span> <span class="pre">+</span> <span class="pre">8</span></code> es una expresión, <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> es
+una expresión porque devuelve la suma de <code class="docutils literal notranslate"><span class="pre">x</span></code> e <code class="docutils literal notranslate"><span class="pre">y</span></code>. Como la parte <code class="docutils literal notranslate"><span class="pre">else</span></code>
+es obligatoria, una sentencia <code class="docutils literal notranslate"><span class="pre">if</span></code> siempre devolverá algo y por tanto es una
+expresión. Si queremos sumar uno a cada número que es producido por la función
+anterior, podemos escribir su cuerpo así.</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">doubleSmallNumber&#39;</span> <span class="n">x</span> <span class="ow">=</span> <span class="p">(</span><span class="kr">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="kr">then</span> <span class="n">x</span> <span class="kr">else</span> <span class="n">x</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Si hubiésemos omitido los paréntesis, sólo hubiera sumado uno si <code class="docutils literal notranslate"><span class="pre">x</span></code> no
+fuera mayor que 100. Fíjate en el <code class="docutils literal notranslate"><span class="pre">'</span></code> al final del nombre de la función. Ese
+apóstrofe no tiene ningún significado especial en la sintaxis de Haskell. Es
+un carácter válido para ser usado en el nombre de una función. Normalmente
+usamos <code class="docutils literal notranslate"><span class="pre">'</span></code> para denotar la versión estricta de una función (una que no es
+perezosa) o una pequeña versión modificada de una función o variable. Como
+<code class="docutils literal notranslate"><span class="pre">'</span></code> es un carácter válido para la funciones, podemos hacer cosas como esta.</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">conanO&#39;Brien</span> <span class="ow">=</span> <span class="s">&quot;¡Soy yo, Conan O&#39;Brien!&quot;</span>
+</pre></div>
+</div>
+<p>Hay dos cosas que nos quedan por destacar. La primera es que el nombre de esta
+función no empieza con mayúsculas. Esto se debe a que las funciones no pueden
+empezar con una letra en mayúsculas. Veremos el porqué un poco más tarde. La
+segunda es que esta función no toma ningún parámetro, normalmente lo llamamos
+una definición (o un nombre). Como no podemos cambiar las definiciones (y las
+funciones) después de que las hayamos definido, <code class="docutils literal notranslate"><span class="pre">conanO'Brien</span></code> y la cadena
+<code class="docutils literal notranslate"><span class="pre">&quot;It's</span> <span class="pre">a-me,</span> <span class="pre">Conan</span> <span class="pre">O'Brien!&quot;</span></code> se pueden utilizar indistintamente.</p>
+</div>
+<div class="section" id="una-introduccion-a-las-listas">
+<h2>Una introducción a las listas<a class="headerlink" href="#una-introduccion-a-las-listas" title="Enlazar permanentemente con este título">¶</a></h2>
+<img alt="Lista" class="align-left" src="../_images/list.png" />
+<p>Al igual que las listas de la compra de la vida real, las listas en Haskell
+son muy útiles. Es la estructura de datos más utilizada y pueden ser
+utilizadas de diferentes formas para modelar y resolver un montón de
+problemas. Las listas son MUY importantes. En esta sección daremos un vistazo
+a las bases sobre las listas, cadenas de texto (las cuales son listas) y
+listas intensionales.</p>
+<p>En Haskell, las listas son una estructura de datos <strong>homogénea</strong>. Almacena
+varios elementos del mismo tipo. Esto significa que podemos crear una lista de
+enteros o una lista de caracteres, pero no podemos crear una lista que tenga
+unos cuantos enteros y otros cuantos caracteres. Y ahora, ¡una lista!</p>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Podemos usar la palabra reservada <code class="docutils literal notranslate"><span class="pre">let</span></code> para definir un nombre en GHCi.
+Hacer <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">a</span> <span class="pre">=</span> <span class="pre">1</span></code> dentro de GHCi es equivalente ha escribir <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">1</span></code> en
+un fichero y luego cargarlo.</p>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; let lostNumbers = [4,8,15,16,23,42]
+ghci&gt; lostNumbers
+[4,8,15,16,23,42]
+</pre></div>
+</div>
+<p>Como puedes ver, las listas se definen mediante corchetes y sus valores se
+separan por comas. Si intentáramos crear una lista como esta
+<code class="docutils literal notranslate"><span class="pre">[1,2,'a',3,'b','c',4]</span></code>, Haskell nos avisaría que los caracteres (que por
+cierto son declarados como un carácter entre comillas simples) no son
+números. Hablando sobre caracteres, las cadenas son simplemente listas de
+caracteres. <code class="docutils literal notranslate"><span class="pre">&quot;hello&quot;</span></code> es solo una alternativa sintáctica de
+<code class="docutils literal notranslate"><span class="pre">['h','e','l','l','o']</span></code>. Como las cadenas son listas, podemos usar las
+funciones que operan con listas sobre ellas, lo cual es realmente útil.</p>
+<p>Una tarea común es concatenar dos listas. Cosa que conseguimos con el operador
+<code class="docutils literal notranslate"><span class="pre">++</span></code>.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; [1,2,3,4] ++ [9,10,11,12]
+[1,2,3,4,9,10,11,12]
+ghci&gt; &quot;hello&quot; ++ &quot; &quot; ++ &quot;world&quot;
+&quot;hello world&quot;
+ghci&gt; [&#39;w&#39;,&#39;o&#39;] ++ [&#39;o&#39;,&#39;t&#39;]
+&quot;woot&quot;
+</pre></div>
+</div>
+<p>Hay que tener cuidado cuando utilizamos el operador <code class="docutils literal notranslate"><span class="pre">++</span></code> repetidas veces
+sobre cadenas largas. Cuando concatenamos dos listas (incluso si añadimos una
+lista de un elemento a otra lista, por ejemplo <code class="docutils literal notranslate"><span class="pre">[1,2,3]</span> <span class="pre">++</span> <span class="pre">[4]</span></code>,
+internamente, Haskell tiene que recorrer la lista entera desde la parte
+izquierda del operador <code class="docutils literal notranslate"><span class="pre">++</span></code>. Esto no supone ningún problema cuando
+trabajamos con listas que no son demasiado grandes. Pero concatenar algo al
+final de una lista que tiene cincuenta millones de elementos llevará un rato.
+Sin embargo, concatenar algo al principio de una lista utilizando el operador
+<code class="docutils literal notranslate"><span class="pre">:</span></code> (también llamado operador cons) es instantáneo.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; &#39;U&#39;:&quot;n gato negro&quot;
+&quot;Un gato negro&quot;
+ghci&gt; 5:[1,2,3,4,5]
+[5,1,2,3,4,5]
+</pre></div>
+</div>
+<p>Fíjate que <code class="docutils literal notranslate"><span class="pre">:</span></code> toma un número y una lista de números o un carácter y una lista
+de caracteres, mientras que <code class="docutils literal notranslate"><span class="pre">++</span></code> toma dos listas. Incluso si añades un
+elemento al final de las lista con <code class="docutils literal notranslate"><span class="pre">++</span></code>, hay que rodearlo con corchetes para
+que se convierte en una lista de un solo elemento.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; [1,2] ++ 3
+&lt;interactive&gt;:1:10:
+    No instance for (Num [a0])
+      arising from the literal `3&#39;
+      [...]
+
+ghci&gt; [1,2] ++ [3]
+[1,2,3]
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">[1,2,3]</span></code> es una alternativa sintáctica de <code class="docutils literal notranslate"><span class="pre">1:2:3:[]</span></code>. <code class="docutils literal notranslate"><span class="pre">[]</span></code> es una lista
+vacía. Si anteponemos 3 a ella con <code class="docutils literal notranslate"><span class="pre">:</span></code>, obtenemos <code class="docutils literal notranslate"><span class="pre">[3]</span></code>, y si anteponemos 2
+a esto obtenemos <code class="docutils literal notranslate"><span class="pre">[2,3]</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p><code class="docutils literal notranslate"><span class="pre">[]</span></code>, <code class="docutils literal notranslate"><span class="pre">[[]]</span></code> y <code class="docutils literal notranslate"><span class="pre">[[],[],[]]</span></code> son cosas diferentes entre si. La
+primera es una lista vacía, la segunda es una lista que contiene un
+elemento (una lista vacía) y la tercera es una lista que contiene tres
+elementos (tres listas vacías).</p>
+</div>
+<p>Si queremos obtener un elemento de la lista sabiendo su índice, utilizamos
+<code class="docutils literal notranslate"><span class="pre">!!</span></code>. Los índices empiezan por 0.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; &quot;Steve Buscemi&quot; !! 6
+&#39;B&#39;
+ghci&gt; [9.4,33.2,96.2,11.2,23.25] !! 1
+33.2
+</pre></div>
+</div>
+<p>Pero si intentamos obtener el sexto elemento de una lista que solo tiene cuatro
+elementos, obtendremos un error, así que hay que ir con cuidado.</p>
+<p>Las listas también pueden contener listas. Estas también pueden contener a su
+vez listas que contengan listas, que contengan listas…</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; let b = [[1,2,3,4],[5,3,3,3],[1,2,2,3,4],[1,2,3]]
+ghci&gt; b
+[[1,2,3,4],[5,3,3,3],[1,2,2,3,4],[1,2,3]]
+ghci&gt; b ++ [[1,1,1,1]]
+[[1,2,3,4],[5,3,3,3],[1,2,2,3,4],[1,2,3],[1,1,1,1]]
+ghci&gt; [6,6,6]:b
+[[6,6,6],[1,2,3,4],[5,3,3,3],[1,2,2,3,4],[1,2,3]]
+ghci&gt; b !! 2
+[1,2,2,3,4]
+</pre></div>
+</div>
+<p>Las listas dentro de las listas pueden tener diferentes tamaños pero no
+pueden tener diferentes tipos. De la misma forma que no se puede contener
+caracteres y números en un lista, tampoco se puede contener listas que
+contengan listas de caracteres y listas de números.</p>
+<p>Las listas pueden ser comparadas si los elementos que contienen pueden ser
+comparados. Cuando usamos <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, y <code class="docutils literal notranslate"><span class="pre">&gt;=</span></code> para comparar listas,
+son comparadas en orden lexicográfico. Primero son comparadas las cabezas.
+Luego son comparados los segundos elementos y así sucesivamente.</p>
+<p>¿Qué mas podemos hacer con las listas? Aquí tienes algunas funciones básicas
+que pueden operar con las listas.</p>
+<blockquote>
+<div><ul>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">head</span></code> toma una lista y devuelve su cabeza. La cabeza de una
+lista es básicamente el primer elemento.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; head [5,4,3,2,1]
+5
+</pre></div>
+</div>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">tail</span></code> toma una lista y devuelve su cola. En otros palabras,
+corta la cabeza de la lista.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; tail [5,4,3,2,1]
+[4,3,2,1]
+</pre></div>
+</div>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">last</span></code> toma una lista y devuelve su último elemento.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; last [5,4,3,2,1]
+1
+</pre></div>
+</div>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">init</span></code> toma una lista y devuelve toda la lista excepto su
+último elemento.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; init [5,4,3,2,1]
+[5,4,3,2]
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<p>Si imaginamos las listas como monstruos, serian algo como:</p>
+<img alt="Monstruo" class="align-center" src="../_images/listmonster.png" />
+<p>¿Pero que pasa si intentamos obtener la cabeza de una lista vacía?</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; head []
+*** Exception: Prelude.head: empty list
+</pre></div>
+</div>
+<p>¡Oh, lo hemos roto! Si no hay monstruo, no hay cabeza. Cuando usamos
+<code class="docutils literal notranslate"><span class="pre">head</span></code>, <code class="docutils literal notranslate"><span class="pre">tail</span></code>, <code class="docutils literal notranslate"><span class="pre">last</span></code> e <code class="docutils literal notranslate"><span class="pre">init</span></code> debemos tener precaución de no usar
+con ellas listas vacías. Este error no puede ser capturado en tiempo de
+compilación así que siempre es una buena práctica tomar precauciones antes de
+decir a Haskell que te devuelva algunos elementos de una lista vacía.</p>
+<blockquote>
+<div><ul>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">length</span></code> toma una lista y obviamente devuelve su tamaño.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; length [5,4,3,2,1]
+5
+</pre></div>
+</div>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">null</span></code> comprueba si una lista está vacía. Si lo está, devuelve
+<code class="docutils literal notranslate"><span class="pre">True</span></code>, en caso contrario devuelve <code class="docutils literal notranslate"><span class="pre">False</span></code>. Usa esta función en lugar
+de <code class="docutils literal notranslate"><span class="pre">xs</span> <span class="pre">==</span> <span class="pre">[]</span></code> (si tienes una lista que se llame xs).</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; null [1,2,3]
+False
+ghci&gt; null []
+True
+</pre></div>
+</div>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">reverse</span></code> pone del revés una lista.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; reverse [5,4,3,2,1]
+[1,2,3,4,5]
+</pre></div>
+</div>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">take</span></code> toma un número y una lista y extrae dicho número de
+elementos de una lista. Observa.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; take 3 [5,4,3,2,1]
+[5,4,3]
+ghci&gt; take 1 [3,9,3]
+[3]
+ghci&gt; take 5 [1,2]
+[1,2]
+ghci&gt; take 0 [6,6,6]
+[]
+</pre></div>
+</div>
+<p>Fíjate que si intentamos tomar más elementos de los que hay en una lista,
+simplemente devuelve la lista. Si tomamos 0 elementos, obtenemos una lista
+vacía.</p>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">drop</span></code> funciona de forma similar, solo que quita un número de
+elementos del comienzo de la lista.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; drop 3 [8,4,2,1,5,6]
+[1,5,6]
+ghci&gt; drop 0 [1,2,3,4]
+[1,2,3,4]
+ghci&gt; drop 100 [1,2,3,4]
+[]
+</pre></div>
+</div>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">maximum</span></code> toma una lista de cosas que se pueden poner en algún
+tipo de orden y devuelve el elemento más grande.</p></li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">minimum</span></code> devuelve el más pequeño.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; minimum [8,4,2,1,5,6]
+1
+ghci&gt; maximum [1,9,2,3,4]
+9
+</pre></div>
+</div>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">sum</span></code> toma una lista de números y devuelve su suma.</p></li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">product</span></code> toma una lista de números y devuelve su producto.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; sum [5,2,1,6,3,2,5,7]
+31
+ghci&gt; product [6,2,1,2]
+24
+ghci&gt; product [1,2,5,6,7,9,2,0]
+0
+</pre></div>
+</div>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">elem</span></code> toma una cosa y una lista de cosas y nos dice si dicha
+cosa es un elemento de la lista. Normalmente, esta función es llamada de
+forma infija porque resulta más fácil de leer.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; 4 `elem` [3,4,5,6]
+True
+ghci&gt; 10 `elem` [3,4,5,6]
+False
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<p>Estas fueron unas cuantas funciones básicas que operan con listas. Veremos más
+funciones que operan con listas más adelante.</p>
+</div>
+<div class="section" id="texas-rangos">
+<h2>Texas rangos<a class="headerlink" href="#texas-rangos" title="Enlazar permanentemente con este título">¶</a></h2>
+<img alt="Cowboy" class="align-right" src="../_images/cowboy.png" />
+<p>¿Qué pasa si queremos una lista con todos los números entre el 1 y el 20? Sí,
+podríamos simplemente escribirlos todos pero obviamente esto no es una
+solución para los que buscan buenos lenguajes de programación. En su lugar,
+usaremos rangos. Los rangos son una manera de crear listas que contengan una
+secuencia aritmética de elementos enumerables. Los números pueden ser
+enumerados. Uno, dos, tres, cuatro, etc. Los caracteres también pueden ser
+enumerados. El alfabeto es una enumeración de caracteres desde la A hasta la
+Z. Los nombres no son enumerables. ¿Qué viene después de «Juan»? Ni idea.</p>
+<p>Para crear una lista que contenga todos los números naturales desde el 1 hasta
+el 20 simplemente escribimos <code class="docutils literal notranslate"><span class="pre">[1..20]</span></code>. Es equivalente a escribir
+<code class="docutils literal notranslate"><span class="pre">[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]</span></code> y no hay ninguna
+diferencia entre escribir uno u otro salvo que escribir manualmente una
+larga secuencia de enumerables es bastante estúpido.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; [1..20]
+[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+ghci&gt; [&#39;a&#39;..&#39;z&#39;]
+&quot;abcdefghijklmnopqrstuvwxyz&quot;
+ghci&gt; [&#39;K&#39;..&#39;Z&#39;]
+&quot;KLMNOPQRSTUVWXYZ&quot;
+</pre></div>
+</div>
+<p>También podemos especificar el número de pasos entre elementos de un rango ¿Y
+si queremos todos los números pares desde el 1 hasta el 20? ¿o cada tercer
+número?</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; [2,4..20]
+[2,4,6,8,10,12,14,16,18,20]
+ghci&gt; [3,6..20]
+[3,6,9,12,15,18]
+</pre></div>
+</div>
+<p>Es cuestión de separar los primeros dos elementos con una coma y luego
+especificar el límite superior. Aunque son inteligentes, los rangos con pasos
+no son tan inteligentes como algunas personas esperan que sean. No puedes
+escribir <code class="docutils literal notranslate"><span class="pre">[1,2,4,8,16..100]</span></code> y esperar obtener todas las potencias de 2.
+Primero porque solo se puede especificar un paso. Y segundo porque las
+secuencias que no son aritméticas son ambiguas si solo damos unos pocos
+elementos iniciales.</p>
+<p>Para obtener una lista con todos los números desde el 20 hasta el 1 no podemos
+usar <code class="docutils literal notranslate"><span class="pre">[20..1]</span></code>, debemos utilizar <code class="docutils literal notranslate"><span class="pre">[20,19..1]</span></code>.</p>
+<p>¡Cuidado cuando uses números en coma flotante con los rangos! Éstos no
+son del todo precisos (por definición), y su uso con los rangos puede dar
+algunos resultados no esperados.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; [0.1, 0.3 .. 1]
+[0.1,0.3,0.5,0.7,0.8999999999999999,1.0999999999999999]
+</pre></div>
+</div>
+<p>Mi consejo es no utilizar rangos con números en coma flotante.</p>
+<p>También podemos utilizar los rangos para crear listas infinitas simplemente no
+indicando un límite superior. Más tarde nos centraremos más en las listas
+infinitas. Por ahora, vamos a examinar como obtendríamos los primeros 24
+múltiplos de 13. Sí, podemos utilizar <code class="docutils literal notranslate"><span class="pre">[13,26..24*13]</span></code>. Pero hay una forma
+mejor: <code class="docutils literal notranslate"><span class="pre">take</span> <span class="pre">13</span> <span class="pre">[13,26..]</span></code>. Como Haskell es perezoso, no intentará evaluar
+la lista infinita inmediatamente porque no terminaría nunca. Esperará a ver
+que es lo que quieres obtener de la lista infinita. En este caso ve que solo
+queremos los primeros 24 elementos y los evalúa con mucho gusto.</p>
+<p>Ahora, un par de funciones que generan listas infinitas:</p>
+<blockquote>
+<div><ul>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">cycle</span></code> toma una lista y crea un ciclo de listas iguales
+infinito. Si intentáramos mostrar el resultado nunca terminaría así que
+hay que cortarlo en alguna parte.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; take 10 (cycle [1,2,3])
+[1,2,3,1,2,3,1,2,3,1]
+ghci&gt; take 12 (cycle &quot;LOL &quot;)
+&quot;LOL LOL LOL &quot;
+</pre></div>
+</div>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">repeat</span></code> toma un elemento y produce una lista infinita que
+contiene ese único elemento repetido. Es como hacer un ciclo de una lista
+con un solo elemento.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; take 10 (repeat 5)
+[5,5,5,5,5,5,5,5,5,5]
+</pre></div>
+</div>
+<p>Aunque aquí sería más simple usar la función <code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">replicate</span></code>, ya
+que sabemos el número de elementos de antemano. <code class="docutils literal notranslate"><span class="pre">replicate</span> <span class="pre">3</span> <span class="pre">10</span></code> devuelve
+<code class="docutils literal notranslate"><span class="pre">[10,10,10]</span></code>.</p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="soy-una-lista-intensional">
+<span id="intensional"></span><h2>Soy una lista intensional<a class="headerlink" href="#soy-una-lista-intensional" title="Enlazar permanentemente con este título">¶</a></h2>
+<img alt="Kermit" class="align-left" src="../_images/kermit.png" />
+<p>Si alguna vez tuviste clases de matemáticas, probablemente viste algún
+conjunto definido de forma intensiva, definido a partir de otros conjuntos más
+generales. Un conjunto definido de forma intensiva que contenga los diez
+primeros números naturales pares sería
+<span class="math notranslate nohighlight">\(\mathrm{\mathsf{\mathrm{S=\{2\cdot x\left|\: x\in\mathbb{N},\: x\leq10\right.\}}}}\)</span>.
+La parte anterior al separador se llama la función de salida,
+<span class="math notranslate nohighlight">\(\mathrm{\mathsf{\mathrm{x}}}\)</span> es la variable,
+<span class="math notranslate nohighlight">\(\mathrm{\mathsf{\mathrm{\mathbb{N}}}}\)</span> es el conjunto de entrada y
+<span class="math notranslate nohighlight">\(\mathrm{\mathsf{\mathrm{x\leq10}}}\)</span> es el predicado. Esto significa que
+el conjunto contiene todos los dobles de los número naturales que cumplen el
+predicado.</p>
+<p>Si quisiéramos escribir esto en Haskell, podríamos usar algo como
+<code class="docutils literal notranslate"><span class="pre">take</span> <span class="pre">10</span> <span class="pre">[2,4..]</span></code>. Pero, ¿y si no quisiéramos los dobles de los diez
+primeros número naturales, sino algo más complejo? Para ello podemos utilizar
+listas intensionales. Las listas intensionales son muy similares a los
+conjuntos definidos de forma intensiva. En este caso, la lista intensional que
+deberíamos usar sería <code class="docutils literal notranslate"><span class="pre">[x*2</span> <span class="pre">|</span> <span class="pre">x</span> <span class="pre">&lt;-</span> <span class="pre">[1..10]]</span></code>. <code class="docutils literal notranslate"><span class="pre">x</span></code> es extraído de
+<code class="docutils literal notranslate"><span class="pre">[1..10]</span></code> y para cada elemento de <code class="docutils literal notranslate"><span class="pre">[1..10]</span></code> (que hemos ligado a <code class="docutils literal notranslate"><span class="pre">x</span></code>)
+calculamos su doble. Su resultado es:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; [x*2 | x &lt;- [1..10]]
+[2,4,6,8,10,12,14,16,18,20]
+</pre></div>
+</div>
+<p>Como podemos ver, obtenemos el resultado deseado. Ahora vamos a añadir una
+condición (o un predicado) a esta lista intensional. Los predicados van
+después de la parte donde enlazamos las variables, separado por una coma.
+Digamos que solo queremos los elementos que su doble sea mayor o igual a doce:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; [x*2 | x &lt;- [1..10], x*2 &gt;= 12]
+[12,14,16,18,20]
+</pre></div>
+</div>
+<p>Bien, funciona. ¿Y si quisiéramos todos los números del 50 al 100 cuyo resto
+al dividir por 7 fuera 3? Fácil:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; [ x | x &lt;- [50..100], x `mod` 7 == 3]
+[52,59,66,73,80,87,94]
+</pre></div>
+</div>
+<p>¡Todo un éxito! Al hecho de eliminar elementos de la lista utilizando
+predicados también se conoce como <strong>filtrado</strong>. Tomamos una lista de números y
+la filtramos usando predicados. Otro ejemplo, digamos que queremos lista
+intensional que reemplace cada número impar mayor que diez por «BANG!» y cada
+número impar menor que diez por «BOOM!». Si un número no es impar, lo dejamos
+fuera de la lista. Para mayor comodidad, vamos a poner la lista intensional
+dentro de una función para que sea fácilmente reutilizable.</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">boomBangs</span> <span class="n">xs</span> <span class="ow">=</span> <span class="p">[</span> <span class="kr">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="kr">then</span> <span class="s">&quot;BOOM!&quot;</span> <span class="kr">else</span> <span class="s">&quot;BANG!&quot;</span> <span class="o">|</span> <span class="n">x</span> <span class="ow">&lt;-</span> <span class="n">xs</span><span class="p">,</span> <span class="n">odd</span> <span class="n">x</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>La última parte de la comprensión es el predicado. La función <code class="docutils literal notranslate"><span class="pre">odd</span></code> devuelve
+<code class="docutils literal notranslate"><span class="pre">True</span></code> si le pasamos un número impar y <code class="docutils literal notranslate"><span class="pre">False</span></code> con uno par. El elemento es
+incluido en la lista solo si todos los predicados se evalúan a <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; boomBangs [7..13]
+[&quot;BOOM!&quot;,&quot;BOOM!&quot;,&quot;BANG!&quot;,&quot;BANG!&quot;]
+</pre></div>
+</div>
+<p>Podemos incluir varios predicados. Si quisiéramos todos los elementos del 10
+al 20 que no fueran 13, 15 ni 19, haríamos:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; [x | x &lt;- [10..20], x /= 13, x /= 15, x /= 19]
+[10,11,12,14,16,17,18,20]
+</pre></div>
+</div>
+<p>No solo podemos tener varios predicados en una lista intensional (un elemento
+debe satisfacer todos los predicados para ser incluido en la lista), sino que
+también podemos extraer los elementos de varias listas. Cuando extraemos
+elementos de varias listas, se producen todas las combinaciones posibles de
+dichas listas y se unen según la función de salida que suministremos. Una
+lista intensional que extrae elementos de dos listas cuyas longitudes son de
+4, tendrá una longitud de 16 elementos, siempre y cuando no los filtremos. Si
+tenemos dos listas, <code class="docutils literal notranslate"><span class="pre">[2,5,10]</span></code> y <code class="docutils literal notranslate"><span class="pre">[8,10,11]</span></code> y queremos que el producto de
+todas las combinaciones posibles entre ambas, podemos usar algo como:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; [ x*y | x &lt;- [2,5,10], y &lt;- [8,10,11]]
+[16,20,22,40,50,55,80,100,110]
+</pre></div>
+</div>
+<p>Como era de esperar, la longitud de la nueva lista es de 9 ¿Y si quisiéramos
+todos los posibles productos cuyo valor sea mayor que 50?</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; [ x*y | x &lt;- [2,5,10], y &lt;- [8,10,11], x*y &gt; 50]
+[55,80,100,110]
+</pre></div>
+</div>
+<p>¿Qué tal una lista intensional que combine una lista de adjetivos con una
+lista de nombres? Solo para quedarnos tranquilos…</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; let noums = [&quot;rana&quot;,&quot;zebra&quot;,&quot;cabra&quot;]
+ghci&gt; let adjetives = [&quot;perezosa&quot;,&quot;enfadada&quot;,&quot;intrigante&quot;]
+ghci&gt; [noum ++ &quot; &quot; ++ adjetive | noum &lt;- noums, adjetive &lt;- adjetives]
+[&quot;rana perezosa&quot;,&quot;rana enfadada&quot;,&quot;rana intrigante&quot;,&quot;zebra perezosa&quot;,
+&quot;zebra enfadada&quot;,&quot;zebra intrigante&quot;,&quot;cabra perezosa&quot;,&quot;cabra enfadada&quot;,
+&quot;cabra intrigante&quot;]
+</pre></div>
+</div>
+<p>¡Ya se! Vamos a escribir nuestra propia versión de <code class="docutils literal notranslate"><span class="pre">length</span></code>. La llamaremos
+<code class="docutils literal notranslate"><span class="pre">length'</span></code>.</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">length&#39;</span> <span class="n">xs</span> <span class="ow">=</span> <span class="n">sum</span> <span class="p">[</span><span class="mi">1</span> <span class="o">|</span> <span class="kr">_</span> <span class="ow">&lt;-</span> <span class="n">xs</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">_</span></code> significa que no nos importa lo que vayamos a extraer de la lista, así
+que en vez de escribir el nombre de una variable que nunca usaríamos,
+simplemente escribimos <code class="docutils literal notranslate"><span class="pre">_</span></code>. La función reemplaza cada elemento de la lista
+original por 1 y luego los suma. Esto significa que la suma resultante será el
+tamaño de nuestra lista.</p>
+<p>Un recordatorio: como las cadenas son listas, podemos usar las listas
+intensionales para procesar y producir cadenas. Por ejemplo, una función que
+toma cadenas y elimina de ellas todo excepto las letras mayúsculas sería algo
+tal que así:</p>
+<div class="highlight-haskell notranslate"><div class="highlight"><pre><span></span><span class="nf">removeNonUppercase</span> <span class="n">st</span> <span class="ow">=</span> <span class="p">[</span> <span class="n">c</span> <span class="o">|</span> <span class="n">c</span> <span class="ow">&lt;-</span> <span class="n">st</span><span class="p">,</span> <span class="n">c</span> <span class="p">`</span><span class="n">elem</span><span class="p">`</span> <span class="p">[</span><span class="sc">&#39;A&#39;</span><span class="o">..</span><span class="sc">&#39;Z&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+<p>Unas pruebas rápidas:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; removeNonUppercase &quot;Jajaja! Ajajaja!&quot;
+&quot;JA&quot;
+ghci&gt; removeNonUppercase &quot;noMEGUSTANLASRANAS&quot;
+&quot;MEGUSTANLASRANAS&quot;
+</pre></div>
+</div>
+<p>En este caso el predicado hace todo el trabajo. Dice que el elemento será
+incluido en la lista solo si es un elemento de <code class="docutils literal notranslate"><span class="pre">[A..Z]</span></code>. Es posible crear
+listas intensionales anidadas si estamos trabajando con listas que contienen
+listas. Por ejemplo, dada una lista de listas de números, vamos eliminar los
+números impares sin aplanar la lista:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; let xxs = [[1,3,5,2,3,1,2,4,5],[1,2,3,4,5,6,7,8,9],[1,2,4,2,1,6,3,1,3,2,3,6]]
+ghci&gt; [ [ x | x &lt;- xs, even x ] | xs &lt;- xxs]
+[[2,2,4],[2,4,6,8],[2,4,2,6,2,6]]
+</pre></div>
+</div>
+<p>Podemos escribir las listas intensionales en varias líneas. Si no estamos
+usando GHCi es mejor dividir las listas intensionales en varias líneas,
+especialmente si están anidadas.</p>
+</div>
+<div class="section" id="tuplas">
+<h2>Tuplas<a class="headerlink" href="#tuplas" title="Enlazar permanentemente con este título">¶</a></h2>
+<img alt="Tupla" class="align-right" src="../_images/tuple.png" />
+<p>De alguna forma, las tuplas son parecidas a las listas. Ambas son una forma de
+almacenar varios valores en un solo valor. Sin embargo, hay unas cuantas
+diferencias fundamentales. Una lista de números es una lista de números. Ese
+es su tipo y no importa si tiene un sólo elemento o una cantidad infinita de
+ellos. Las tuplas sin embargo, son utilizadas cuando sabes exactamente cuantos
+valores tienen que ser combinados y su tipo depende de cuantos componentes
+tengan y del tipo de estos componentes. Las tuplas se denotan con paréntesis y
+sus valores se separan con comas.</p>
+<p>Otra diferencia clave es que no tienen que ser homogéneas. Al contrario que
+las listas, las tuplas pueden contener una combinación de valores de distintos
+tipos.</p>
+<p>Piensa en como representaríamos un vector bidimensional en Haskell. Una forma
+sería utilizando listas. Podría funcionar. Entonces, ¿si quisiéramos poner
+varios vectores dentro de una lista que representa los puntos de una figura
+bidimensional? Podríamos usar algo como <code class="docutils literal notranslate"><span class="pre">[[1,2],[8,11],[4,5]]</span></code>. El problema
+con este método es que también podríamos hacer cosas como
+<code class="docutils literal notranslate"><span class="pre">[[1,2],[8,11,5],[4,5]]</span></code> ya que Haskell no tiene problemas con ello, sigue
+siendo una lista de listas de números pero no tiene ningún sentido. Pero una
+tupla de tamaño 2 (también llamada dupla) tiene su propio tipo, lo que
+significa que no puedes tener varias duplas y una tripla (una tupla de tamaño
+3) en una lista, así que vamos a usar éstas. En lugar de usar corchetes
+rodeando los vectores utilizamos paréntesis: <code class="docutils literal notranslate"><span class="pre">[(1,2),(8,11),(4,5)]</span></code>. ¿Qué
+pasaría si intentamos crear una forma como <code class="docutils literal notranslate"><span class="pre">[(1,2),(8,11,5),(4,5)]</span></code>? Bueno,
+obtendríamos este error:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Couldn&#39;t match expected type `(t, t1)&#39;
+against inferred type `(t2, t3, t4)&#39;
+In the expression: (8, 11, 5)
+In the expression: [(1, 2), (8, 11, 5), (4, 5)]
+In the definition of `it&#39;: it = [(1, 2), (8, 11, 5), (4, 5)]
+</pre></div>
+</div>
+<p>Nos está diciendo que hemos intentado usar una dupla y una tripla en la misma
+lista, lo cual no esta permitido ya que las listas son homogéneas y un dupla
+tiene un tipo diferente al de una tripla (aunque contengan el mismo tipo de
+valores). Tampoco podemos hacer algo como <code class="docutils literal notranslate"><span class="pre">[(1,2),(&quot;uno&quot;,2)]</span></code> ya que el
+primer elemento de la lista es una tupla de números y el segundo es una tupla
+de una cadena y un número. Las tuplas pueden ser usadas para representar una
+gran variedad de datos. Por ejemplo, si queremos representar el nombre y la
+edad de alguien en Haskell, podemos utilizar la tripla: <code class="docutils literal notranslate"><span class="pre">(&quot;Christopher&quot;,</span>
+<span class="pre">&quot;Walken&quot;,</span> <span class="pre">55)</span></code>. Como hemos visto en este ejemplo las tuplas también pueden
+contener listas.</p>
+<p>Utilizamos la tuplas cuando sabemos de antemano cuantos componentes de algún
+dato debemos tener. Las tuplas son mucho más rígidas que las listas ya que
+para cada tamaño tienen su propio tipo, así que no podemos escribir una
+función general que añada un elemento a una tupla: tenemos que escribir una
+función para añadir duplas, otra función para añadir triplas, otra función
+para añadir cuádruplas, etc.</p>
+<p>Mientras que existen listas unitarias, no existen tuplas unitarias. Realmente
+no tiene mucho sentido si lo piensas. Una tupla unitaria sería simplemente el
+valor que contiene y no nos aportaría nada útil.</p>
+<p>Como las listas, las tuplas pueden ser comparadas si sus elementos pueden ser
+comparados. Solo que no podemos comparar dos tuplas de diferentes tamaños
+mientras que si podemos comparar dos listas de diferentes tamaños. Dos
+funciones útiles para operar con duplas son:</p>
+<blockquote>
+<div><ul>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">fst</span></code> toma una dupla y devuelve su primer componente.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; fst (8,11)
+8
+ghci&gt; fst (&quot;Wow&quot;, False)
+&quot;Wow&quot;
+</pre></div>
+</div>
+</li>
+<li><p><code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">snd</span></code> toma una dupla y devuelve su segundo componente.
+¡Sorpresa!</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; snd (8,11)
+11
+ghci&gt; snd (&quot;Wow&quot;, False)
+False
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Nota</p>
+<p>Estas funciones solo operan sobre duplas. No funcionaran sobre triplas,
+cuádruplas, quíntuplas, etc. Veremos más formas de extraer datos de las
+tuplas un poco más tarde.</p>
+</div>
+<p>Ahora una función interesante que produce listas de duplas es
+<code class="xref cpp cpp-member docutils literal notranslate"><span class="pre">zip</span></code>. Esta función toma dos listas y las une en un lista uniendo
+sus elementos en una dupla. Es una función realmente simple pero tiene
+montones de usos. Es especialmente útil cuando queremos combinar dos listas de
+alguna forma o recorrer dos listas simultáneamente. Aquí tienes una
+demostración:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; zip [1,2,3,4,5] [5,5,5,5,5]
+[(1,5),(2,5),(3,5),(4,5),(5,5)]
+ghci&gt; zip [1 .. 5] [&quot;uno&quot;,&quot;dos&quot;,&quot;tres&quot;,&quot;cuatro&quot;,&quot;cinco&quot;]
+[(1,&quot;uno&quot;),(2,&quot;dos&quot;),(3,&quot;tres&quot;),(4,&quot;cuatro&quot;),(5,&quot;cinco&quot;)]
+</pre></div>
+</div>
+<p>Como vemos, se emparejan los elementos produciendo una nueva lista. El primer
+elemento va el primero, el segundo el segundo, etc. Ten en cuenta que como las
+duplas pueden tener diferentes tipos, <code class="docutils literal notranslate"><span class="pre">zip</span></code> puede tomar dos listas que
+contengan diferentes tipos y combinarlas. ¿Qué pasa si el tamaño de las listas
+no coincide?</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; zip [5,3,2,6,2,7,2,5,4,6,6] [&quot;soy&quot;,&quot;una&quot;,&quot;tortuga&quot;]
+[(5,&quot;soy&quot;),(3,&quot;una&quot;),(2,&quot;tortuga&quot;)]
+</pre></div>
+</div>
+<p>Simplemente se recorta la lista más larga para que coincida con el tamaño de
+la más corta. Como Haskell es perezoso, podemos usar <code class="docutils literal notranslate"><span class="pre">zip</span></code> usando listas
+finitas e infinitas:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; zip [1..] [&quot;manzana&quot;, &quot;naranja&quot;, &quot;cereza&quot;, &quot;mango&quot;]
+[(1,&quot;manzana&quot;),(2,&quot;naranja&quot;),(3,&quot;cereza&quot;),(4,&quot;mango&quot;)]
+</pre></div>
+</div>
+<img alt="Pitágoras" class="align-center" src="../_images/pythag.png" />
+<p>He aquí un problema que combina tuplas con listas intensionales: ¿Qué
+triángulo recto cuyos lados miden enteros menores que 10 tienen un perímetro
+igual a 24? Primero, vamos a intentar generar todos los triángulos con lados
+iguales o menores que 10:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; let triangles = [ (a,b,c) | c &lt;- [1..10], b &lt;- [1..10], a &lt;- [1..10] ]
+</pre></div>
+</div>
+<p>Simplemente estamos extrayendo valores de estas tres listas y nuestra función
+de salida las esta combinando en una tripla. Si evaluamos esto escribiendo
+<code class="docutils literal notranslate"><span class="pre">triangles</span></code> en GHCi, obtendremos una lista con todos los posibles triángulos
+cuyos lados son menores o iguales que 10. Ahora, debemos añadir una condición
+que nos filtre únicamente los triángulos rectos. Vamos a modificar esta
+función teniendo en consideración que el lado b no es mas largo que la
+hipotenusa y que el lado a no es más largo que el lado b.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; let rightTriangles = [ (a,b,c) | c &lt;- [1..10], b &lt;- [1..c], a &lt;- [1..b], a^2 + b^2 == c^2]
+</pre></div>
+</div>
+<p>Ya casi hemos acabado. Ahora, simplemente modificaremos la función diciendo
+que solo queremos aquellos que su perímetro es 24.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ghci&gt; let rightTriangles&#39; = [ (a,b,c) | c &lt;- [1..10], b &lt;- [1..c], a &lt;- [1..b], a^2 + b^2 == c^2, a+b+c == 24]
+ghci&gt; rightTriangles&#39;
+[(6,8,10)]
+</pre></div>
+</div>
+<p>¡Y ahí está nuestra respuesta! Este método de resolución de problemas es muy
+común en la programación funcional. Empiezas tomando un conjunto de soluciones
+y vas aplicando transformaciones para ir obteniendo soluciones, filtrándolas
+una y otra vez hasta obtener las soluciones correctas.</p>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navegación</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="tipos.html" title="Tipos y clases de tipos"
+             >siguiente</a></li>
+        <li class="right" >
+          <a href="introduccion.html" title="Introducción"
+             >anterior</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../chapters.html">Índice</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21994994-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  </body>
+</html>
